@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\ProfilDataPersister;
 use App\Repository\ProfilRepository;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
@@ -61,7 +63,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  * )
  *  @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  */
-class Profil 
+class Profil extends ProfilDataPersister
 {
     /**
      * @ORM\Id
@@ -78,6 +80,7 @@ class Profil
 
     /**
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="profil")
+     * @ORM\JoinColumn(nullable=true)
      * @ApiSubresource()
      * 
      */

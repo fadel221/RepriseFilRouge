@@ -2,9 +2,12 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\CM;
 use Faker\Factory;
 use App\Entity\User;
 use App\Entity\Profil;
+use App\Entity\Apprenant;
+use App\Entity\Formateur;
 use App\DataFixtures\ProfilFixtures;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -21,7 +24,11 @@ class UserFixtures extends Fixture
     
     public function load(ObjectManager $manager)
     {
-                $users = new User();
+        $class=[new User(),new Formateur(),new Apprenant(),new CM ()];
+        $ref=['ADMIN','FORMATEUR','APPRENANT','CM'];
+        for ($i=0;$i<4 ;$i++)
+        {
+                $users = $class[$i];
                 $faker = Factory::create('fr_FR');
                 $users->setNom($faker->lastname);
                 $users->setPrenom($faker->firstname);
@@ -31,10 +38,23 @@ class UserFixtures extends Fixture
                 $users->setUsername(strtolower($faker->name()));
                 $password = $this->encoder->encodePassword($users, "passe");
                 $users->setPassword($password);
-                $users->setProfil($this->getReference("ADMIN"));
+                $users->setProfil($this->getReference(($ref[$i])));
                 $manager->persist($users);
                 $manager->flush();
+        }
         // other fixtures can get this object using the UserFixtures::ADMIN_USER_REFERENCE constant
         
     }
+
+    public function getDependencies()
+    {
+        return array(
+            ProfilFixtures::class,
+        );
+    }
+
+    
+       
+        
+    
 }

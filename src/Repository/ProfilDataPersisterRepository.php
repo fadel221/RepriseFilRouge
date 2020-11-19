@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\Profil;
+use App\Entity\ProfilDataPersister;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Profil|null find($id, $lockMode = null, $lockVersion = null)
- * @method Profil|null findOneBy(array $criteria, array $orderBy = null)
- * @method Profil[]    findAll()
- * @method Profil[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method ProfilDataPersister|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ProfilDataPersister|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ProfilDataPersister[]    findAll()
+ * @method ProfilDataPersister[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ProfilRepository extends ServiceEntityRepository
+class ProfilDataPersisterRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Profil::class);
+        parent::__construct($registry, ProfilDataPersister::class);
     }
 
      /**
-      * @return Profil[] Returns an array of Profil objects
-      */
+      * @return ProfilDataPersister[] Returns an array of ProfilDataPersister objects
+   */
     
     public function findByExampleField($value)
     {
@@ -37,7 +37,7 @@ class ProfilRepository extends ServiceEntityRepository
     
 
     
-    public function findOneBySomeField($value): ?Profil
+    public function findOneBySomeField($value): ?ProfilDataPersister
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.exampleField = :val')

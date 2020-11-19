@@ -107,7 +107,7 @@ class User implements UserInterface
     private $email;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean",nullable=true)
      * @Groups({"user_read",})
      */
     private $isDeleted;
@@ -128,14 +128,14 @@ class User implements UserInterface
 
     /**
      * @ORM\ManyToOne(targetEntity=Profil::class, inversedBy="users")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      * 
      * 
      */
     private $profil;
 
     /**
-     * @ORM\Column(type="blob")
+     * @ORM\Column(type="blob",nullable=true)
      */
     private $avatar;
 

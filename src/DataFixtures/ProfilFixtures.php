@@ -26,6 +26,7 @@ class ProfilFixtures extends Fixture
         {
             $profil=new Profil();
             $profil->setLibelle($value);
+            $profil->setIsDeleted(false);
             $manager->persist($profil);
             $manager->flush();
             $this->addReference($value, $profil);

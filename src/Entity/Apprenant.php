@@ -22,9 +22,10 @@ class Apprenant extends User
         return $this->id;
     }
 
-    public function setId($id ): ?int
+    public function setId($id): ?int
     {
          $this->id=$id;
+         return $id;
     }
 
 }
