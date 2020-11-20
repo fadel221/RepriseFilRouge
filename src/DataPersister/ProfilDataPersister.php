@@ -1,15 +1,23 @@
 <?php
 
-namespace App\Entity;
+namespace App\DataPersister;
 
-use App\Repository\ProfilDataPersisterRepository;
+
 
 
 use App\Entity\Profil;
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 class ProfilDataPersister implements DataPersisterInterface
 {
+    private $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+    
     public function supports($data): bool
     {
         return $data instanceof Profil;
@@ -24,8 +32,9 @@ class ProfilDataPersister implements DataPersisterInterface
     }
     public function remove($data)
     {
+        //Archivage du profil
         $data->setisDeleted(true);
-        $this->entityManager->$this->persist($data);
+        $this->entityManager->persist($data);
         $this->entityManager->flush();
     }
 }
