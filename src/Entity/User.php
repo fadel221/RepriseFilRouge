@@ -87,7 +87,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"user_read"})
+     * @Groups({"user_read","apprenant_read","formateur_read"})
      */
     private $username;
 
@@ -102,25 +102,25 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_read",})
+     * @Groups({"user_read","apprenant_read","formateur_read"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="boolean",nullable=true)
-     * @Groups({"user_read",})
+     * @Groups({"user_read","apprenant_read","formateur_read"})
      */
     private $isDeleted;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_read",})
+     * @Groups({"user_read","apprenant_read","formateur_read"})
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_read",})
+     * @Groups({"user_read","apprenant_read","formateur_read"})
      */
     private $nom;
 

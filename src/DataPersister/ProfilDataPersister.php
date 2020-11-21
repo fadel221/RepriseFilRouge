@@ -33,8 +33,15 @@ class ProfilDataPersister implements DataPersisterInterface
     public function remove($data)
     {
         //Archivage du profil
-        $data->setisDeleted(true);
-        $this->entityManager->persist($data);
+        $data->setisDeleted(true);//Mettre le statut à true pour montrer qu'on l'archive
+        $users=$data->getUsers(); //Reccupérer tout les users avec ce profil
+        foreach ($users as $user)
+        {
+            $user->setisDeleted(true); //Archiver chaque user
+        }
+        
+        $this->entityManager->persist($data);//Et on renvoie à la BD
         $this->entityManager->flush();
+        
     }
 }

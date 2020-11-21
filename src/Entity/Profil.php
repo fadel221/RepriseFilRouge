@@ -82,7 +82,6 @@ class Profil extends ProfilDataPersister
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="profil")
      * @ORM\JoinColumn(nullable=true)
      * @ApiSubresource()
-     * 
      */
     private $users;
 
