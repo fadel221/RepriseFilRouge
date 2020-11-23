@@ -20,9 +20,9 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  * @ApiResource(
  * attributes=
  * {
- *          "pagination_items_per_page"=10,
- *          "normalization_context"={"groups"={"profil_read"},"enable_max_depth"=true}
- *      },
+ *   "pagination_items_per_page"=10,
+ *    "normalization_context"={"groups"={"profil_read"},"enable_max_depth"=true}
+ *  },
  *     collectionOperations={
  *         "post"={
  *              "security_post_denormalize"="is_granted('ROLE_ADMIN')", 

@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CMRepository;
 use Doctrine\ORM\Mapping as ORM;
-
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 /**
  * @ORM\Entity(repositoryClass=CMRepository::class)
  */

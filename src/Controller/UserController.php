@@ -17,7 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserController extends AbstractController
-{
+{    
      /**
      * @Route(
      *     path="/api/admin/users",
@@ -35,15 +35,14 @@ class UserController extends AbstractController
         $avatar = $request->files->get("avatar");
         $avatar = fopen($avatar->getRealPath(),"rb");
         $user["avatar"] = $avatar;
+        
+        $profil = $profil->find($user["profil_id"]);
         $user = $serializer->denormalize($user,"App\Entity\User");
         $errors = $validator->validate($user);
         /*if (count($errors)){
             $errors = $serializer->serialize($errors,"json");
             return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
         }*/
-        $profil = $profil->find(1);
-        $profil->setLibelle("ADMIN");
-        $profil->setIsDeleted(false);
         $user -> setProfil($profil);
         $user->setisDeleted(false);
         $password = $user->getPassword();
@@ -95,12 +94,13 @@ class UserController extends AbstractController
         {
             $user->setUsername($data['username']);
         }
+
         $errors= $validator->validate($user);
         /*if (count($errors)){
             $errors = $serializer->serialize($errors,"json");
             return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
         }*/
-        //dd($user);
+        
         $manager->persist($user);
         $manager->flush();
         fclose($avatar);
@@ -118,13 +118,22 @@ class UserController extends AbstractController
      *         }
      * )
     */
-    public function DeleteUser(Request $request,SerializerInterface $serializer,ValidatorInterface $validator,UserRepository $userrep,EntityManagerInterface $manager,$id)
+    public function DeleteUser(Request $request,UserPasswordEncoderInterface $encoder,SerializerInterface $serializer,ValidatorInterface $validator,UserRepository $userrep,EntityManagerInterface $manager,$id)
     {
+        $data = $request->request->all();
         $user= $userrep->find($id);
-        $user->setisDeleted(true);
+        $user->setIsDeleted(true);
+        $errors= $validator->validate($user);
+        /*if (count($errors)){
+            $errors = $serializer->serialize($errors,"json");
+            return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
+        }*/
         $manager->persist($user);
         $manager->flush();
-        return $this->json($user,Response::HTTP_OK);
+        
+        return $this->json($user,Response::HTTP_CREATED);
     }
+
+    
     
 }

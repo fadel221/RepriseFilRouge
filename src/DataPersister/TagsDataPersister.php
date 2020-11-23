@@ -6,11 +6,11 @@ namespace App\DataPersister;
 
 
 
-use App\Entity\Profil;
+use App\Entity\Tags;
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ProfilDataPersister implements DataPersisterInterface
+class TagsDataPersister implements DataPersisterInterface
 {
     private $entityManager;
 
@@ -21,10 +21,10 @@ class ProfilDataPersister implements DataPersisterInterface
     
     public function supports($data): bool
     {
-        return $data instanceof Profil;
+        return $data instanceof Tags;
     }
     /**
-     * @param Profil $data
+     * @param Tags $data
      */
     public function persist($data)
     {
@@ -33,16 +33,8 @@ class ProfilDataPersister implements DataPersisterInterface
     }
     public function remove($data)
     {
-        //Archivage du profil
+        //Archivage du Tags
         $data->setisDeleted(true);//Mettre le statut à true pour montrer qu'on l'archive
-        $users=$data->getUsers(); //Reccupérer tout les users avec ce profil
-        foreach ($users as $user)
-        {
-            $user->setisDeleted(true); //Archiver chaque user
-            $this->entityManager->persist($user);//Et on renvoie à la BD
-            $this->entityManager->flush();
-        }
-        
         $this->entityManager->persist($data);//Et on renvoie à la BD
         $this->entityManager->flush();
         

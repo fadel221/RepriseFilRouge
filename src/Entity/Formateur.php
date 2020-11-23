@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\FormateurRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 
 /**
  * @ORM\Entity(repositoryClass=FormateurRepository::class)
@@ -27,6 +28,12 @@ use ApiPlatform\Core\Annotation\ApiResource;
  *              "path"="admin/formateurs",
  *              "defaults"={"id"=null}
  *          },
+ *          "get"={
+ *              "security"="is_granted('ROLE_CM')", 
+ *              "security_message"="Vous n'avez pas acces a cette ressource.",
+ *              "path"="/formateurs",
+ *              "defaults"={"id"=null}
+ *          },
  *     },
  *     
  *     itemOperations={
@@ -35,6 +42,15 @@ use ApiPlatform\Core\Annotation\ApiResource;
  *              "security_message"="Vous n'avez pas ces privileges.",
  *              "normalization_context"={"groups"={"apprenant_read","apprenant_details_read"}},
  *              "path"="admin/formateurs/{id}",
+ *              "requirements"={"id"="\d+"},
+ *              "defaults"={"id"=null}
+ *          },
+ * 
+ *          "get"={
+ *              "security"="is_granted('ROLE_CM')", 
+ *              "security_message"="Vous n'avez pas ces privileges.",
+ *              "normalization_context"={"groups"={"apprenant_read","apprenant_details_read"}},
+ *              "path"="formateurs/{id}",
  *              "requirements"={"id"="\d+"},
  *              "defaults"={"id"=null}
  *          },

@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ApprenantRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
-
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 /**
  * @ORM\Entity(repositoryClass=ApprenantRepository::class)
  * @ApiResource(
@@ -27,6 +27,12 @@ use ApiPlatform\Core\Annotation\ApiResource;
  *              "path"="admin/apprenants",
  *              "defaults"={"id"=null}
  *          },
+ *          "get"={
+ *              "security"="is_granted('ROLE_CM')", 
+ *              "security_message"="Vous n'avez pas acces a cette ressource.",
+ *              "path"="/apprenants",
+ *              "defaults"={"id"=null}
+ *          },
  *     },
  *     
  *     itemOperations={
@@ -35,6 +41,14 @@ use ApiPlatform\Core\Annotation\ApiResource;
  *              "security_message"="Vous n'avez pas ces privileges.",
  *              "normalization_context"={"groups"={"apprenant_read","apprenant_details_read"}},
  *              "path"="admin/apprenants/{id}",
+ *              "requirements"={"id"="\d+"},
+ *              "defaults"={"id"=null}
+ *          },
+ *           "get"={
+ *              "security"="is_granted('ROLE_CM')", 
+ *              "security_message"="Vous n'avez pas ces privileges.",
+ *              "normalization_context"={"groups"={"apprenant_read","apprenant_details_read"}},
+ *              "path"="apprenants/{id}",
  *              "requirements"={"id"="\d+"},
  *              "defaults"={"id"=null}
  *          },
@@ -75,6 +89,11 @@ class Apprenant extends User
      */
     private $id;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=ProfilSortie::class, inversedBy="apprenants")
+     */
+    private $profilSortie;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -84,6 +103,18 @@ class Apprenant extends User
     {
          $this->id=$id;
          return $id;
+    }
+
+    public function getProfilSortie(): ?ProfilSortie
+    {
+        return $this->profilSortie;
+    }
+
+    public function setProfilSortie(?ProfilSortie $profilSortie): self
+    {
+        $this->profilSortie = $profilSortie;
+
+        return $this;
     }
 
 }

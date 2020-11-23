@@ -10,13 +10,15 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-
+use App\DataPersister\UserDataPersister;
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({"user" = "User", "formateur" = "Formateur", "apprenant"="Apprenant","cm"="CM"})
+ * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  * @ApiResource(
  * attributes={
  *          "pagination_items_per_page"=10,
@@ -54,10 +56,12 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "security"="(is_granted('ROLE_FORMATEUR'))",
  *              "security_message"="Vous n'avez pas access à cette Ressource"
  *          }, 
- *         "delete"={
+ *         "delete_user"={
+ *              "method"="DELETE",
  *              "security"="is_granted('ROLE_ADMIN')",
  *              "security_message"="Vous n'avez pas ces privileges.",
  *              "path"="admin/users/{id}",
+ *              "normalization_context"={"groups"={"user_read","user_details_read"}},
  *              "requirements"={"id"="\d+"},
  *          },
  *         "patch"={
@@ -74,9 +78,10 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *          },
  *     },
  * )
- * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
+ * 
  */
-class User implements UserInterface
+
+class User  implements UserInterface   
 {
     /**
      * @ORM\Id
@@ -87,7 +92,8 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"user_read","apprenant_read","formateur_read"})
+     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read"})
+     * @Assert\NotBlank()
      */
     private $username;
 
@@ -97,30 +103,34 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * 
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_read","apprenant_read","formateur_read"})
+     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read"})
+     * 
      */
     private $email;
 
     /**
      * @ORM\Column(type="boolean",nullable=true)
-     * @Groups({"user_read","apprenant_read","formateur_read"})
+     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read"})
+     * 
      */
     private $isDeleted;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_read","apprenant_read","formateur_read"})
+     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read"})
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_read","apprenant_read","formateur_read"})
+     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read"})
+     * 
      */
     private $nom;
 
@@ -129,7 +139,6 @@ class User implements UserInterface
     /**
      * @ORM\ManyToOne(targetEntity=Profil::class, inversedBy="users")
      * @ORM\JoinColumn(nullable=true)
-     * 
      * 
      */
     private $profil;
