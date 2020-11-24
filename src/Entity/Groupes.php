@@ -5,7 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\GroupesRepository;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=GroupesRepository::class)
@@ -47,7 +47,6 @@ class Groupes
     public function setType(string $type): self
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -59,7 +58,6 @@ class Groupes
     public function setStatut(bool $statut): self
     {
         $this->statut = $statut;
-
         return $this;
     }
 

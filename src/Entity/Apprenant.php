@@ -22,7 +22,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "security_message"="Vous n'avez pas le privilege"
  *          },
  *         "get"={
- *              "security"="is_granted('ROLE_FORMATEUR')", 
+ *              "security"="is_granted('ROLE_ADMIN')", 
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
  *              "path"="admin/apprenants",
  *              "defaults"={"id"=null}
@@ -33,11 +33,19 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "path"="/apprenants",
  *              "defaults"={"id"=null}
  *          },
+ *          "add_user"=
+ *          {
+ *              "security"="is_granted('ROLE_ADMIN')",
+ *              "method"="POST", 
+ *              "security_message"="Vous n'avez pas ces privileges.",
+ *              "normalization_context"={"groups"={"apprenant_read","apprenant_details_read"}},
+ *              "path"="apprenants/{id}",  
+ *          },
  *     },
  *     
  *     itemOperations={
  *         "get"={
- *              "security"="is_granted('ROLE_FORMATEUR')", 
+ *              "security"="is_granted('ROLE_ADMIN')", 
  *              "security_message"="Vous n'avez pas ces privileges.",
  *              "normalization_context"={"groups"={"apprenant_read","apprenant_details_read"}},
  *              "path"="admin/apprenants/{id}",
@@ -52,13 +60,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "requirements"={"id"="\d+"},
  *              "defaults"={"id"=null}
  *          },
- *          "get_admin"={
- *              "method"="GET",
- *              "path"="/admins/{id}",
- *              "requirements"={"id"="\d+"},
- *              "security"="(is_granted('ROLE_FORMATEUR'))",
- *              "security_message"="Vous n'avez pas access à cette Ressource"
- *          }, 
+ * 
+ *           
  *         "delete"={
  *              "security"="is_granted('ROLE_ADMIN')",
  *              "security_message"="Vous n'avez pas ces privileges.",
@@ -77,6 +80,13 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "path"="admin/apprenants/{id}",
  *              "requirements"={"id"="\d+"},
  *          },
+ *          "update_user"=
+ *          {
+ *              "security_post_denormalize"="is_granted('ROLE_FORMATEUR')", 
+ *              "security_message"="Vous n'avez pas ces privileges.",
+ *              "path"="apprenants/{id}",
+ *              "requirements"={"id"="\d+"},
+ *          }
  *     },
  * )
  */

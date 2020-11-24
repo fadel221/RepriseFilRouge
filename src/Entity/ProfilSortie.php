@@ -10,7 +10,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource(
  * attributes={
@@ -84,6 +84,7 @@ class ProfilSortie
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"profilsorties_read"})
+     * @Assert\NotBlank()
      */
     private $libelle;
 
@@ -92,6 +93,11 @@ class ProfilSortie
      * @Groups({"profilsorties_read"})
      */
     private $apprenants;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isDeleted;
 
     public function __construct()
     {
@@ -141,6 +147,18 @@ class ProfilSortie
                 $apprenant->setProfilSortie(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIsDeleted(): ?bool
+    {
+        return $this->isDeleted;
+    }
+
+    public function setIsDeleted(bool $isDeleted): self
+    {
+        $this->isDeleted = $isDeleted;
 
         return $this;
     }

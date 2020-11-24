@@ -9,7 +9,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\GroupecompetenceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource()
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
@@ -36,11 +36,13 @@ class Groupecompetence
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $type;
 
     /**
      * @ORM\Column(type="string", length=255)
+     *  @Assert\NotBlank()
      */
     private $nom;
 

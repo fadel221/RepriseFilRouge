@@ -10,7 +10,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource(
  * attributes={
@@ -34,7 +34,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *     
  *     itemOperations={
  *         "get"={
- *              "security"="is_granted('ROLE_ADMIN')",
+ *              "security"="is_granted('ROLE_CM')",
  *              "security_message"="Vous n'avez pas ce privilege.",
  *              "path"="admin/competences/{id}",
  *         }, 
@@ -72,6 +72,7 @@ class Competence
     /**
      * @ORM\Column(type="string", length=255)
      * Groups({"competence_read"})
+     * @Assert\NotBlank()
      */
     private $libelle;
 

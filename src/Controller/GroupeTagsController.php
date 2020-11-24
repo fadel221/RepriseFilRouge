@@ -23,12 +23,12 @@ class GroupeTagsController extends AbstractController
 
     /**
      * @Route(
-     *     path="/api/admin/groupeTagss",
+     *     path="/api/admin/groupeTags",
      *     methods={"POST"},
      *     defaults={
      *          "__controller"="App\Controller\GroupeTagsController::addGroupeTags",
      *          "__api_resource_class"=GroupeTags::class,
-     *          "__api_collection_operation_name"="add_groupeTagss"
+     *          "__api_collection_operation_name"="add_groupeTags"
      *     }
      * )
     */
@@ -37,19 +37,16 @@ class GroupeTagsController extends AbstractController
         $GroupeTags_json = $request -> getContent();
 
         $GroupeTags_tab = $serializer ->decode($GroupeTags_json,"json");
-        
         $GroupeTags = new GroupeTags();
-
         $GroupeTags -> setLibelle($GroupeTags_tab['libelle']);
         $tag_tab = $GroupeTags_tab['tag'];
         foreach ($tag_tab as $key => $value) 
-        {
+        {dd($value);
             $tag = new Tags();
             $tag -> setLibelle($value['libelle']);
             $tag -> setDescriptif($value["descriptif"]);
             $tag->setIsDeleted(false);
             $GroupeTags -> addtag($tag);
-        
         }
 
         
@@ -72,7 +69,7 @@ class GroupeTagsController extends AbstractController
     /**
      * @Route
      * (
-     *     path="/api/admin/groupeTagss/{id}",
+     *     path="/api/admin/groupeTags/{id}",
      *     methods={"PUT","PATCH"},
      *     defaults={
      *          "__controller"="App\Controller\GroupeTagsController::updateGroupeTags",

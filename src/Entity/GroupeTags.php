@@ -11,7 +11,7 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource(
  * 
@@ -20,16 +20,16 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *          "normalization_context"={"groups"={"Grptags_read","Grptags_tags_read"},"enable_max_depth"=true}
  *      },
  *     collectionOperations={
- *          "post"={
+ *          "add_groupeTags"={
  *              "path"="admin/groupetags",
  *              "security"="is_granted('ROLE_FORMATEUR')",
  *              "security_post_denormalize_message"="Vous n'avez pas ce privilege.",
+ *              "method"="post"
  *          },
  *         "get"={
  *              "security"="is_granted('ROLE_FORMATEUR')", 
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
- *              "path"="admin/groupetags",
- *               
+ *              "path"="admin/groupetags"
  *              },
  * 
  *              "show_groupetags_tags"={
@@ -82,6 +82,7 @@ class GroupeTags
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"Grptags_read","Grptags_tags_read"})
+     *  @Assert\NotBlank()
      */
     private $libelle;
 
@@ -100,6 +101,7 @@ class GroupeTags
     public function __construct()
     {
         $this->tags = new ArrayCollection();
+        $this->isDeleted=false;
     }
 
     public function getId(): ?int

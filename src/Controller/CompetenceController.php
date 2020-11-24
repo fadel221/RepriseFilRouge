@@ -34,9 +34,9 @@ class CompetenceController extends AbstractController
     */
     public function addCompetence(Request $request,SerializerInterface $serializer,ValidatorInterface $validator,EntityManagerInterface $manager, GroupecompetenceRepository $grpcmp)
     {
-        $competence_json = $request -> getContent();
+        $competence_json = $request->getContent();
 
-        $Competence_tab = $serializer -> decode($competence_json,"json");
+        $Competence_tab = $serializer->decode($competence_json,"json");
         $Competence = new Competence();
         $Competence -> setLibelle($Competence_tab['libelle']);
         $Niveau_tab = $Competence_tab['niveau'];
@@ -61,18 +61,20 @@ class CompetenceController extends AbstractController
             $niveau = new Niveau();
             $niveau -> setLibelle($value['libelle']);
             $niveau -> setcritereEvaluation($value['critereEvaluation']);
+            //$niveau -> setgroupeAction($value['groupeAction']);
             $Competence->addNiveau($niveau);
         }
 
         
+        /*if (!$this -> isGranted("EDIT",$Competence)) {
+            return $this -> json(["message" => "Cette action vous est interdite"],Response::HTTP_FORBIDDEN);
+        }*/
 
-        
-
-        $errors = $validator->validate($Competence);
+       /* $errors = $validator->validate($Competence);
         if (count($errors)){
             $errors = $serializer->serialize($errors,"json");
             return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
-        }
+        }*/
         
         $manager->persist($Competence);
         $manager->flush();
@@ -94,8 +96,8 @@ class CompetenceController extends AbstractController
     */
     public function updateCompetence(Request $request,SerializerInterface $serializer,ValidatorInterface $validator,EntityManagerInterface $manager, $id, CompetenceRepository $rep_cmp,NiveauRepository $rep_niveau)
     {
-        $Competence_json = $request -> getContent();
-        $Competence_tab = $serializer -> decode($Competence_json,"json");
+        $Competence_json = $request->getContent();
+        $Competence_tab = $serializer->decode($Competence_json,"json");
         $Competence = new Competence();
         if (!($Competence = $rep_cmp -> find($id))) {
             return $this ->json(null, Response::HTTP_NOT_FOUND,);
@@ -120,11 +122,14 @@ class CompetenceController extends AbstractController
                     if (isset($value['critereEvaluation'])) {
                         $niveau -> setcritereEvaluation($value['critereEvaluation']);
                     }
-                    
+                    if (isset($value['groupeAction'])) {
+                       //$niveau -> setGroupeAction($value['groupeAction']);
+                    }
                 }
                 elseif (isset($value['libelle']) && isset($value['critereEvaluation']) && isset($value['groupeAction'])) {
                     $niveau -> setLibelle($value['libelle']);
                     $niveau -> setcritereEvaluation($value['critereEvaluation']);
+                   //$niveau -> setGroupeAction($value['groupeAction']);
                     $Competence->addNiveau($niveau);
                 }
                 else {
@@ -133,7 +138,9 @@ class CompetenceController extends AbstractController
             }
         }
         
-        
+        if (!$this -> isGranted("EDIT",$Competence)) {
+            return $this -> json(["message" => "Cette action vous est interdite"],Response::HTTP_FORBIDDEN);
+        }
 
 
         $errors = $validator->validate($Competence);
@@ -142,7 +149,6 @@ class CompetenceController extends AbstractController
             $errors = $serializer->serialize($errors,"json");
             return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
         }
-        
         $manager->persist($Competence);
         $manager->flush();
         return $this->json($Competence,Response::HTTP_CREATED);
@@ -150,6 +156,8 @@ class CompetenceController extends AbstractController
 
 
     
-    
 }
+    
+    
+
 

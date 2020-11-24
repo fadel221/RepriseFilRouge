@@ -15,7 +15,6 @@ class UserDataPersister implements DataPersisterInterface
 
     public function __construct(EntityManagerInterface $entityManager)
     {
-
         $this->entityManager = $entityManager;
     }
     
@@ -37,6 +36,5 @@ class UserDataPersister implements DataPersisterInterface
         $data->setisDeleted(true);//Mettre le statut à true pour montrer qu'on l'archive
         $this->entityManager->persist($data);//Et on renvoie à la BD
         $this->entityManager->flush();
-        
     }
 }

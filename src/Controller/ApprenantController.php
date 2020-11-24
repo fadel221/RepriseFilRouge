@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-
-use App\Entity\Profil;
 use App\Services\UserServices;
 use App\Repository\UserRepository;
 use App\Repository\ProfilRepository;
@@ -11,17 +9,16 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class UserController extends AbstractController
-{    
-     /**
+class ApprenantController extends AbstractController
+{
+    /**
      * @Route(
-     *     path="/api/admin/users",
+     *     path="/api/apprenants",
      *     methods={"POST"},
      *     defaults={
      *          "__controller"="App\Controller\UserController::addUser",
@@ -38,7 +35,7 @@ class UserController extends AbstractController
 
     /**
      * @Route(
-     *     path="/api/admin/users/{id}",
+     *     path="/api/apprenants/{id}",
      *     methods={"PUT"},
      *     defaults={
      *          "__controller"="App\Controller\UserController::UpdateUser",
@@ -51,34 +48,4 @@ class UserController extends AbstractController
     {
         $userservice->updateUser($request, $encoder, $serializer, $validator, $userrep,$manager,$id);
     }
-
-    /**
-     * @Route(
-     *     path="/api/admin/users/{id}",
-     *     methods={"DELETE"},
-     *     defaults={
-     *          "__controller"="App\Controller\UserController::DeleteUser",
-     *          "__api_resource_class"=User::class,
-     *          "__api_collection_operation_name"="delete_user"
-     *         }
-     * )
-    */
-    public function DeleteUser(Request $request,UserPasswordEncoderInterface $encoder,SerializerInterface $serializer,ValidatorInterface $validator,UserRepository $userrep,EntityManagerInterface $manager,$id)
-    {
-        $data = $request->request->all();
-        $user= $userrep->find($id);
-        $user->setIsDeleted(true);
-        $errors= $validator->validate($user);
-        /*if (count($errors)){
-            $errors = $serializer->serialize($errors,"json");
-            return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
-        }*/
-        $user->setLastUpdate(new \DateTime());
-        $manager->persist($user);
-        $manager->flush(); 
-        return $this->json($user,Response::HTTP_CREATED);
-    }
-
-    
-    
 }

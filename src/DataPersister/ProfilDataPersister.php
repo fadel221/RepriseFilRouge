@@ -39,12 +39,12 @@ class ProfilDataPersister implements DataPersisterInterface
         foreach ($users as $user)
         {
             $user->setisDeleted(true); //Archiver chaque user
+            $user->setLastUpdate(new \DateTime());
             $this->entityManager->persist($user);//Et on renvoie à la BD
             $this->entityManager->flush();
         }
-        
+        $data->setLastUpdate(new \DateTime());
         $this->entityManager->persist($data);//Et on renvoie à la BD
         $this->entityManager->flush();
-        
     }
 }

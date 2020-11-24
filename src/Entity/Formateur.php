@@ -16,25 +16,21 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *      },
  * 
  *      collectionOperations={
- *          "add_apprenant"={
- *              "method"="POST",
- *              "path"="/admin/formateurs",
- *              "security"="is_granted('ROLE_ADMIN')",
- *              "security_message"="Vous n'avez pas le privilege"
- *          },
  *         "get"={
  *              "security"="is_granted('ROLE_FORMATEUR')", 
- *              "security_message"="Vous n'avez pas acces a cette ressource.",
- *              "path"="admin/formateurs",
- *              "defaults"={"id"=null}
- *          },
- *          "get"={
- *              "security"="is_granted('ROLE_CM')", 
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
  *              "path"="/formateurs",
  *              "defaults"={"id"=null}
  *          },
- *     },
+ *          "add_user"=
+ *          {
+ *              "method"="POST",
+ *              "security"="is_granted('ROLE_ADMIN')", 
+ *              "security_message"="Vous n'avez pas acces a cette ressource.",
+ *              "path"="/formateurs",
+ *              "defaults"={"id"=null}
+ *          },
+ *     },   
  *     
  *     itemOperations={
  *         "get"={
@@ -45,7 +41,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "requirements"={"id"="\d+"},
  *              "defaults"={"id"=null}
  *          },
- * 
  *          "get"={
  *              "security"="is_granted('ROLE_CM')", 
  *              "security_message"="Vous n'avez pas ces privileges.",
@@ -54,13 +49,13 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "requirements"={"id"="\d+"},
  *              "defaults"={"id"=null}
  *          },
- *           
  *         "delete"={
  *              "security"="is_granted('ROLE_ADMIN')",
  *              "security_message"="Vous n'avez pas ces privileges.",
  *              "path"="admin/formateurs/{id}",
  *              "requirements"={"id"="\d+"},
  *          },
+ *          
  *         "patch"={
  *              "security"="is_granted('ROLE_ADMIN')", 
  *              "security_message"="Vous n'avez pas ces privileges.",

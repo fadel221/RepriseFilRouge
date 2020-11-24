@@ -8,7 +8,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource()
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
@@ -32,18 +32,21 @@ class Niveau
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"competence_read"})
+     *  @Assert\NotBlank()
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="text")
      * @Groups({"competence_read"})
+     *  @Assert\NotBlank()
      */
     private $criterPerformance;
 
     /**
      * @ORM\Column(type="text")
      * @Groups({"competence_read"})
+     *  @Assert\NotBlank()
      */
     private $critereEvaluation;
 
@@ -60,7 +63,6 @@ class Niveau
     public function setCompetence(?Competence $competence): self
     {
         $this->competence = $competence;
-
         return $this;
     }
 
@@ -83,7 +85,6 @@ class Niveau
     public function setCriterPerformance(string $criterPerformance): self
     {
         $this->criterPerformance = $criterPerformance;
-
         return $this;
     }
 
@@ -95,7 +96,6 @@ class Niveau
     public function setCritereEvaluation(string $critereEvaluation): self
     {
         $this->critereEvaluation = $critereEvaluation;
-
         return $this;
     }
 }

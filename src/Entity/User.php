@@ -28,9 +28,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      collectionOperations={
  *          "add_user"={
  *              "method"="POST",
- *              "path"="/admin/users",
+ *              "path"="admin/users",
  *              "security"="is_granted('ROLE_ADMIN')",
- *              "security_message"="Vous n'avez pas le privilege"
+ *              "security_message"="Vous n'avez pas le privilege",
+ *              
  *          },
  *         "get"={
  *              "security"="is_granted('ROLE_ADMIN')", 
@@ -78,7 +79,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          },
  *     },
  * )
- * 
+ * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  */
 
 class User  implements UserInterface   
@@ -93,7 +94,6 @@ class User  implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read"})
-     * @Assert\NotBlank()
      */
     private $username;
 
@@ -110,7 +110,7 @@ class User  implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read"})
-     * 
+     * @Assert\Email()
      */
     private $email;
 
@@ -130,7 +130,6 @@ class User  implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read"})
-     * 
      */
     private $nom;
 
@@ -147,6 +146,11 @@ class User  implements UserInterface
      * @ORM\Column(type="blob",nullable=true)
      */
     private $avatar;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $lastUpdate;
 
     public function getId(): ?int
     {
@@ -289,6 +293,18 @@ class User  implements UserInterface
     public function setAvatar($avatar): self
     {
         $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function getLastUpdate(): ?\DateTimeInterface
+    {
+        return $this->lastUpdate;
+    }
+
+    public function setLastUpdate(?\DateTimeInterface $lastUpdate): self
+    {
+        $this->lastUpdate = $lastUpdate;
 
         return $this;
     }

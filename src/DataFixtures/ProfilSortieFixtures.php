@@ -15,6 +15,7 @@ class ProfilSortieFixtures extends Fixture
         {
             $profilsortie=new ProfilSortie();
             $profilsortie->setLibelle($data);
+            $profilsortie->setIsDeleted(false);
             $manager->persist($profilsortie);
             $manager->flush();
         }

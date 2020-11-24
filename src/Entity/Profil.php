@@ -14,7 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=ProfilRepository::class)
  * @ApiResource(
@@ -75,6 +75,7 @@ class Profil extends ProfilDataPersister
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"profil_read","user_read"})
+     * @Assert\NotBlank()
      */
     private $libelle;
 
@@ -86,9 +87,14 @@ class Profil extends ProfilDataPersister
     private $users;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean",nullable=true)
      */
     private $isDeleted;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $lastUpdate;
 
     public function __construct()
     {
@@ -149,6 +155,18 @@ class Profil extends ProfilDataPersister
     public function setIsDeleted(bool $isDeleted): self
     {
         $this->isDeleted = $isDeleted;
+        return $this;
+    }
+
+    public function getLastUpdate(): ?\DateTimeInterface
+    {
+        return $this->lastUpdate;
+    }
+
+    public function setLastUpdate(?\DateTimeInterface $lastUpdate): self
+    {
+        $this->lastUpdate = $lastUpdate;
+
         return $this;
     }
 }
