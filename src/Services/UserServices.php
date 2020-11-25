@@ -33,7 +33,6 @@ class UserServices
         $avatar = $request->files->get("avatar");
         $avatar = fopen($avatar->getRealPath(),"rb");
         $user["avatar"] = $avatar;
-    
         $profil = $profil->find($user["profil_id"]);
         // Service qui determine le chemin de la classe à instancier
         $userservice=new UserServices();

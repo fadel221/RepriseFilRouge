@@ -87,9 +87,10 @@ class GroupeTags
     private $libelle;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Tags::class, inversedBy="groupeTags")
+     * @ORM\ManyToMany(targetEntity=Tags::class, inversedBy="groupeTags",cascade={"persist"})
      * @Groups({"Grptags_read","Grptags_tags_read"})
      * @ApiSubresource()
+     * 
      */
     private $tags;
 

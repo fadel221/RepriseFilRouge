@@ -35,18 +35,15 @@ class CompetenceController extends AbstractController
     public function addCompetence(Request $request,SerializerInterface $serializer,ValidatorInterface $validator,EntityManagerInterface $manager, GroupecompetenceRepository $grpcmp)
     {
         $competence_json = $request->getContent();
-
         $Competence_tab = $serializer->decode($competence_json,"json");
         $Competence = new Competence();
         $Competence -> setLibelle($Competence_tab['libelle']);
         $Niveau_tab = $Competence_tab['niveau'];
-        if (!isset($Competence_tab['groupecompetences'])) {
-            return $this -> json(["message" => "Une nouvelle compétence doit etre liée à un groupe de compétences"],Response::HTTP_BAD_REQUEST);
-        }
-        $Groupecompetence_id = $Competence_tab['groupecompetences'][0]['id'];
+        
+        //$Groupecompetence_id = $Competence_tab['groupecompetences'][0]['id'];
         
         $Groupecompetence = new Groupecompetence();
-        if (!($Groupecompetence = $grpcmp -> find($Groupecompetence_id))) {
+        if (!($Groupecompetence = $grpcmp -> find($Competence_tab["id"]))) {
             return $this ->json("Groupe de competence non trouvé", Response::HTTP_NOT_FOUND,);
         }
         $Competence -> addGroupecompetence($Groupecompetence );
@@ -61,11 +58,12 @@ class CompetenceController extends AbstractController
             $niveau = new Niveau();
             $niveau -> setLibelle($value['libelle']);
             $niveau -> setcritereEvaluation($value['critereEvaluation']);
-            //$niveau -> setgroupeAction($value['groupeAction']);
+            $niveau -> setgroupeAction($value['groupeAction']);
+            $niveau->setCriterePerformance($value['CriterePerformance']);
             $Competence->addNiveau($niveau);
         }
 
-        
+
         /*if (!$this -> isGranted("EDIT",$Competence)) {
             return $this -> json(["message" => "Cette action vous est interdite"],Response::HTTP_FORBIDDEN);
         }*/
@@ -75,7 +73,7 @@ class CompetenceController extends AbstractController
             $errors = $serializer->serialize($errors,"json");
             return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
         }*/
-        
+
         $manager->persist($Competence);
         $manager->flush();
         return $this->json($Competence,Response::HTTP_CREATED);
@@ -123,13 +121,13 @@ class CompetenceController extends AbstractController
                         $niveau -> setcritereEvaluation($value['critereEvaluation']);
                     }
                     if (isset($value['groupeAction'])) {
-                       //$niveau -> setGroupeAction($value['groupeAction']);
+                       $niveau -> setGroupeAction($value['groupeAction']);
                     }
                 }
                 elseif (isset($value['libelle']) && isset($value['critereEvaluation']) && isset($value['groupeAction'])) {
                     $niveau -> setLibelle($value['libelle']);
                     $niveau -> setcritereEvaluation($value['critereEvaluation']);
-                   //$niveau -> setGroupeAction($value['groupeAction']);
+                   $niveau -> setGroupeAction($value['groupeAction']);
                     $Competence->addNiveau($niveau);
                 }
                 else {
@@ -138,9 +136,7 @@ class CompetenceController extends AbstractController
             }
         }
         
-        if (!$this -> isGranted("EDIT",$Competence)) {
-            return $this -> json(["message" => "Cette action vous est interdite"],Response::HTTP_FORBIDDEN);
-        }
+        
 
 
         $errors = $validator->validate($Competence);
@@ -149,6 +145,7 @@ class CompetenceController extends AbstractController
             $errors = $serializer->serialize($errors,"json");
             return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
         }
+        
         $manager->persist($Competence);
         $manager->flush();
         return $this->json($Competence,Response::HTTP_CREATED);

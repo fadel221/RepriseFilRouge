@@ -41,7 +41,7 @@ class Niveau
      * @Groups({"competence_read"})
      *  @Assert\NotBlank()
      */
-    private $criterPerformance;
+    private $criterePerformance;
 
     /**
      * @ORM\Column(type="text")
@@ -49,6 +49,11 @@ class Niveau
      *  @Assert\NotBlank()
      */
     private $critereEvaluation;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $groupeaction;
 
     public function getId(): ?int
     {
@@ -77,14 +82,14 @@ class Niveau
         return $this;
     }
 
-    public function getCriterPerformance(): ?string
+    public function getCriterePerformance(): ?string
     {
-        return $this->criterPerformance;
+        return $this->criterePerformance;
     }
 
-    public function setCriterPerformance(string $criterPerformance): self
+    public function setCriterePerformance(string $criterePerformance): self
     {
-        $this->criterPerformance = $criterPerformance;
+        $this->criterePerformance = $criterePerformance;
         return $this;
     }
 
@@ -96,6 +101,17 @@ class Niveau
     public function setCritereEvaluation(string $critereEvaluation): self
     {
         $this->critereEvaluation = $critereEvaluation;
+        return $this;
+    }
+
+    public function getGroupeAction(): ?string
+    {
+        return $this->groupeaction;
+    }
+
+    public function setGroupeAction(string $groupeaction): self
+    {
+        $this->groupeaction = $groupeaction;
         return $this;
     }
 }

@@ -76,14 +76,14 @@ class Competence
      */
     private $libelle;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @Groups({"competence_read"})
+    /*
+     *@ORM\Column(type="boolean")
+     *@Groups({"competence_read"})
      */
     private $isDeleted;
 
     /**
-     * @ORM\OneToMany(targetEntity=Niveau::class, mappedBy="competence")
+     * @ORM\OneToMany(targetEntity=Niveau::class, mappedBy="competence",cascade={"persist"})
      * @Groups({"competence_read"})
      */
     private $niveau;
@@ -97,6 +97,7 @@ class Competence
     {
         $this->niveau = new ArrayCollection();
         $this->groupecompetence = new ArrayCollection();
+        $this->setIsDeleted(false);
     }
 
     public function getId(): ?int

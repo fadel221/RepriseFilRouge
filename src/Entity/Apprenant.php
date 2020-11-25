@@ -41,6 +41,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "normalization_context"={"groups"={"apprenant_read","apprenant_details_read"}},
  *              "path"="apprenants/{id}",  
  *          },
+ * 
+ *          
  *     },
  *     
  *     itemOperations={
@@ -86,6 +88,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "security_message"="Vous n'avez pas ces privileges.",
  *              "path"="apprenants/{id}",
  *              "requirements"={"id"="\d+"},
+ *              "method"="PUT"
  *          }
  *     },
  * )

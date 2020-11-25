@@ -45,7 +45,7 @@ class UserFixtures extends Fixture
         // other fixtures can get this object using the UserFixtures::ADMIN_USER_REFERENCE constant
         
     }
-
+    //Précise de charger ProfilFixtures avec les UserFixtures
     public function getDependencies()
     {
         return array(
