@@ -7,6 +7,7 @@ use App\Entity\Tags;
 use App\Entity\GroupeTags;
 use App\Repository\TagRepository;
 use App\Repository\GroupeTagsRepository;
+use App\Repository\TagsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,20 +33,29 @@ class GroupeTagsController extends AbstractController
      *     }
      * )
     */
-    public function addGroupeTags(Request $request,SerializerInterface $serializer,ValidatorInterface $validator,EntityManagerInterface $manager)
+    public function addGroupeTags(Request $request,SerializerInterface $serializer,ValidatorInterface $validator,EntityManagerInterface $manager,TagsRepository $reptag)
     {
         $GroupeTags_json= $request->getContent();
         $GroupeTags_tab = $serializer->decode($GroupeTags_json,"json");
         $GroupeTags = new GroupeTags();
         $GroupeTags -> setLibelle($GroupeTags_tab['libelle']);
-        $tag_tab = $GroupeTags_tab['tags'];
-        foreach ($tag_tab as $key => $value) 
+        foreach ($GroupeTags_tab['tags'] as $value) 
         {
-            $tag = new Tags();
-            $tag -> setLibelle($value['libelle']);
-            $tag -> setDescriptif($value["descriptif"]);
-            $tag->setIsDeleted(false);
-            $GroupeTags -> addtag($tag);
+            //Affectation Tag existant
+            if (isset ($value['id']))
+            {
+                
+                $GroupeTags->addTag($reptag->find($value['id']));
+            }
+            // Ajout nouveaux tags
+            else
+            {
+                $tag = new Tags();
+                $tag -> setLibelle($value['libelle']);
+                $tag -> setDescriptif($value["descriptif"]);
+                $tag->setIsDeleted(false);
+                $GroupeTags -> addtag($tag);
+            }
         }
 
         

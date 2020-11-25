@@ -40,7 +40,7 @@ class CompetenceController extends AbstractController
         $Competence -> setLibelle($Competence_tab['libelle']);
         $Niveau_tab = $Competence_tab['niveau'];
         
-        //$Groupecompetence_id = $Competence_tab['groupecompetences'][0]['id'];
+        $Groupecompetence_id = $Competence_tab['groupecompetences']['id'];
         
         $Groupecompetence = new Groupecompetence();
         if (!($Groupecompetence = $grpcmp -> find($Competence_tab["id"]))) {
@@ -92,63 +92,57 @@ class CompetenceController extends AbstractController
      *     }
      * )
     */
-    public function updateCompetence(Request $request,SerializerInterface $serializer,ValidatorInterface $validator,EntityManagerInterface $manager, $id, CompetenceRepository $rep_cmp,NiveauRepository $rep_niveau)
+    public function updateCompetence(Request $request,SerializerInterface $serializer,ValidatorInterface $validator,EntityManagerInterface $manager, $id, CompetenceRepository $rep_cmp,NiveauRepository $rep_niveau,GroupecompetenceRepository $grpcmp)
     {
         $Competence_json = $request->getContent();
         $Competence_tab = $serializer->decode($Competence_json,"json");
-        $Competence = new Competence();
-        if (!($Competence = $rep_cmp -> find($id))) {
-            return $this ->json(null, Response::HTTP_NOT_FOUND,);
-        }
-        if (isset($Competence_tab['libelle'])) {
-            $Competence -> setLibelle($Competence_tab['libelle']);
-        }
-        
-        $Niveau_tab = isset($Competence_tab['niveau'])?$Competence_tab['niveau']:[];
-        
-        if (!empty($Niveau_tab)) {
-            foreach ($Niveau_tab as $key => $value) {
-                $niveau = new Niveau();
-                if (isset($value['id'])) 
+        if ($competence=$rep_cmp->find($id))
+        {
+            
+            if (isset ($Competence_tab['id']))
+            {
+                $competence->removeGroupecompetence($grpcmp->find($Competence_tab['id']));
+            }
+            if (isset($Competence_tab['libelle']))
+            {
+                $competence->setLibelle($Competence_tab['libelle']);
+            }
+            if (isset ($Competence_tab['niveau']))
+            {
+                foreach ($Competence_tab['niveau'] as $niveau)
                 {
-                    if (!($niveau =  $rep_niveau-> find($value['id']))) {
-                        return $this ->json(null, Response::HTTP_NOT_FOUND,);
+                        if (isset ($niveau['id']) && ($Niveau=$rep_niveau->find($niveau['id']))!=null)
+                        {
+                            
+                            if (isset($niveau['libelle'])) {
+                                $Niveau->setLibelle($niveau['libelle']);
+                                }
+                                if (isset($niveau['critereEvaluation'])) {
+                                $Niveau->setcritereEvaluation($niveau['critereEvaluation']);
+                                }
+                                if (isset($niveau['groupeAction'])) {
+                                $Niveau->setGroupeAction($niveau['groupeAction']);
+                                }
+                                $manager->persist($Niveau);
+                                $manager->flush();
+                        }
                     }
-                    if (isset($value['libelle'])) {
-                        $niveau -> setLibelle($value['libelle']);
-                    }
-                    if (isset($value['critereEvaluation'])) {
-                        $niveau -> setcritereEvaluation($value['critereEvaluation']);
-                    }
-                    if (isset($value['groupeAction'])) {
-                       $niveau -> setGroupeAction($value['groupeAction']);
-                    }
-                }
-                elseif (isset($value['libelle']) && isset($value['critereEvaluation']) && isset($value['groupeAction'])) {
-                    $niveau -> setLibelle($value['libelle']);
-                    $niveau -> setcritereEvaluation($value['critereEvaluation']);
-                   $niveau -> setGroupeAction($value['groupeAction']);
-                    $Competence->addNiveau($niveau);
-                }
-                else {
-                    return $this -> json(["message" => "Données manquantes quelque part"],Response::HTTP_FORBIDDEN);
                 }
             }
-        }
-        
-        
+            
 
-
-        $errors = $validator->validate($Competence);
+        
+             
+        $errors = $validator->validate($competence);
         if (count($errors))
         {
             $errors = $serializer->serialize($errors,"json");
             return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
         }
-        
-        $manager->persist($Competence);
+        $manager->persist($competence);
         $manager->flush();
-        return $this->json($Competence,Response::HTTP_CREATED);
+        //dd($competence);
+        return $this->json($competence,Response::HTTP_CREATED);
     }
 
 

@@ -49,19 +49,19 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "path"="admin/groupetags/{id}",
  *         }, 
  *         "delete"={
- *              "security"="is_granted('DELETE',object)",
+ *              "security"="is_granted('ROLE_ADMIN')",
  *              "security_message"="Seul le proprietaite....",
  *              "path"="admin/groupetags/{id}",
  *         },
  *         "updateGroupetag"={
  *              "method"="PATCH",
- *              "security"="is_granted('EDIT',object)", 
+ *              "security"="is_granted('ROLE_ADMIN')", 
  *              "security_message"="Vous n'avez pas ce privilege.",
  *              "path"="admin/groupetags/{id}",
  *         },
  *         "updateGroupeGroupetag"={
  *              "method"="PUT",
- *              "security_post_denormalize"="is_granted('EDIT', object)", 
+ *              "security_post_denormalize"="is_granted('ROLE_ADMIN')", 
  *              "security_post_denormalize_message"="Vous n'avez pas ce privilege.",
  *              "path"="admin/groupetags/{id}",
  *         },

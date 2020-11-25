@@ -74,6 +74,7 @@ class Tags //extends TagsDataPersister
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
+     * @Groups({"tags_read","Grptags_tags_read"})
      * @ORM\Column(type="integer")
      */
     private $id;

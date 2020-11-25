@@ -90,6 +90,7 @@ class Competence
 
     /**
      * @ORM\ManyToMany(targetEntity=Groupecompetence::class, inversedBy="competences")
+     * @Groups({"competence_read"})
      */
     private $groupecompetence;
 
