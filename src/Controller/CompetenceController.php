@@ -98,7 +98,6 @@ class CompetenceController extends AbstractController
         $Competence_tab = $serializer->decode($Competence_json,"json");
         if ($competence=$rep_cmp->find($id))
         {
-            
             if (isset ($Competence_tab['id']))
             {
                 $competence->removeGroupecompetence($grpcmp->find($Competence_tab['id']));
@@ -129,9 +128,7 @@ class CompetenceController extends AbstractController
                     }
                 }
             }
-            
 
-        
              
         $errors = $validator->validate($competence);
         if (count($errors))
@@ -141,7 +138,7 @@ class CompetenceController extends AbstractController
         }
         $manager->persist($competence);
         $manager->flush();
-        //dd($competence);
+        ////dd($competence);
         return $this->json($competence,Response::HTTP_CREATED);
     }
 

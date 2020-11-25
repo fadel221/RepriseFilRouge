@@ -78,7 +78,7 @@ class GroupeTagsController extends AbstractController
     /**
      * @Route
      * (
-     *     path="/api/admin/groupeTags/{id}",
+     *     path="/api/admin/groupetags/{id}",
      *     methods={"PUT","PATCH"},
      *     defaults={
      *          "__controller"="App\Controller\GroupeTagsController::updateGroupeTags",
@@ -87,28 +87,22 @@ class GroupeTagsController extends AbstractController
      *     }
      * )
     */
-    public function updateGroupeTags(Request $request,SerializerInterface $serializer,ValidatorInterface $validator,EntityManagerInterface $manager, $id, GroupeTagsRepository $cmp, TagRepository $grpcmp)
+    public function  updateGroupeTags(Request $request,SerializerInterface $serializer,ValidatorInterface $validator,EntityManagerInterface $manager, $id, GroupeTagsRepository $cmp, TagsRepository $grpcmp)
     {
-        $GroupeTags_json = $request -> getContent();
-        $GroupeTags_tab = $serializer ->decode($GroupeTags_json,"json");
-        
-        $GroupeTags = new GroupeTags();
-        if (!($GroupeTags = $cmp -> find($id))) 
+        $GroupeTags_json = $request->getContent();
+        $GroupeTags_tab = $serializer->decode($GroupeTags_json,"json");
+        if ($GroupeTags = $cmp -> find($id))
         {
-            return $this ->json(null, Response::HTTP_NOT_FOUND,);
-        }
+                    
         if (isset($GroupeTags_tab['libelle'])) 
         {
-            $GroupeTags -> setLibelle($GroupeTags_tab['libelle']);
+            $GroupeTags->setLibelle($GroupeTags_tab['libelle']);
         }
-        
-        $tag_tab = isset($GroupeTags_tab['tag'])?$GroupeTags_tab['tag']:[];
-    
+        $tag_tab = isset($GroupeTags_tab['tags'])?$GroupeTags_tab['tags']:[];
         if (!empty($tag_tab)) 
         {
             foreach ($tag_tab as $key => $value) {
                 $tag = new Tags();
-                if (isset($value['id'])) 
                 {
                     if (!($tag =  $grpcmp -> find($value['id']))) {
                         return $this ->json(null, Response::HTTP_NOT_FOUND,);
@@ -158,6 +152,7 @@ class GroupeTagsController extends AbstractController
         
         $manager->persist($GroupeTags);
         $manager->flush();
+    }
         return $this->json($GroupeTags,Response::HTTP_CREATED);
     }
 
