@@ -110,7 +110,10 @@ class Tags //extends TagsDataPersister
     {
         return $this->id;
     }
-
+    public function __construct()
+    {
+        $this->setIsDeleted(false);
+    }
     public function getDescriptif(): ?string
     {
         return $this->descriptif;
