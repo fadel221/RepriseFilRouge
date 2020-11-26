@@ -71,20 +71,20 @@ class Competence
 
     /**
      * @ORM\Column(type="string", length=255)
-     * Groups({"competence_read"})
+     * Groups({"competence_read","Grpcompetence_read"})
      * @Assert\NotBlank()
      */
     private $libelle;
 
     /*
      *@ORM\Column(type="boolean")
-     *@Groups({"competence_read"})
+     *@Groups({"competence_read","Grpcompetence_read"})
      */
     private $isDeleted;
 
     /**
      * @ORM\OneToMany(targetEntity=Niveau::class, mappedBy="competence",cascade={"persist"})
-     * @Groups({"competence_read"})
+     * @Groups({"competence_read","Grpcompetence_read"})
      */
     private $niveau;
 

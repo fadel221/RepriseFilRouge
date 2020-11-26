@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping\InheritanceType;
@@ -151,6 +153,16 @@ class User  implements UserInterface
      * @ORM\Column(type="date", nullable=true)
      */
     private $lastUpdate;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Groupecompetence::class, mappedBy="user")
+     */
+    private $groupecompetences;
+
+    public function __construct()
+    {
+        $this->groupecompetences = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -305,6 +317,36 @@ class User  implements UserInterface
     public function setLastUpdate(?\DateTimeInterface $lastUpdate): self
     {
         $this->lastUpdate = $lastUpdate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Groupecompetence[]
+     */
+    public function getGroupecompetences(): Collection
+    {
+        return $this->groupecompetences;
+    }
+
+    public function addGroupecompetence(Groupecompetence $groupecompetence): self
+    {
+        if (!$this->groupecompetences->contains($groupecompetence)) {
+            $this->groupecompetences[] = $groupecompetence;
+            $groupecompetence->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupecompetence(Groupecompetence $groupecompetence): self
+    {
+        if ($this->groupecompetences->removeElement($groupecompetence)) {
+            // set the owning side to null (unless already changed)
+            if ($groupecompetence->getUser() === $this) {
+                $groupecompetence->setUser(null);
+            }
+        }
 
         return $this;
     }

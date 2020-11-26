@@ -16,7 +16,8 @@ class NiveauFixtures extends Fixture
             $niveau=new Niveau();
             $niveau->setLibelle("Niveau ".$i);
             $niveau->setCritereEvaluation("CritereEvaluation ".$i);
-            $niveau->setCriterPerformance("CriterPerformance".$i);
+            $niveau->setCriterePerformance("CriterPerformance" .$i);
+            $niveau->setGroupeAction("GroupeAction ".$i);
             $manager->persist($niveau);
             $manager->flush();
         }

@@ -31,21 +31,21 @@ class Niveau
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"competence_read"})
+     * @Groups({"competence_read","Grpcompetence_read"})
      *  @Assert\NotBlank()
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"competence_read"})
+     * @Groups({"competence_read","Grpcompetence_read"})
      *  @Assert\NotBlank()
      */
     private $criterePerformance;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"competence_read"})
+     * @Groups({"competence_read","Grpcompetence_read"})
      *  @Assert\NotBlank()
      */
     private $critereEvaluation;
