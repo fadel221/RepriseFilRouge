@@ -40,7 +40,6 @@ class CompetenceController extends AbstractController
         $Competence -> setLibelle($Competence_tab['libelle']);
         $Niveau_tab = $Competence_tab['niveau'];
         
-        $Groupecompetence_id = $Competence_tab['groupecompetences']['id'];
         
         $Groupecompetence = new Groupecompetence();
         if (!($Groupecompetence = $grpcmp -> find($Competence_tab["id"]))) {

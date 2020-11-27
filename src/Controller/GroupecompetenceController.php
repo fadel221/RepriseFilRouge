@@ -63,7 +63,8 @@ class GroupecompetenceController extends AbstractController
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $Groupecompetence -> setUser($user);
         $errors = $validator->validate($Groupecompetence);
-        if (count($errors)){
+        if (count($errors))
+        {
             $errors = $serializer->serialize($errors,"json");
             return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
         }
@@ -91,28 +92,26 @@ class GroupecompetenceController extends AbstractController
         $Groupecompetence_tab = $serializer->decode($Groupecompetence_json,"json");
         if ($Groupecompetence = $repgrpecompet->find($id))
         {
-            // Modification libelle de GroupeTag
+            // Modification libelle de Groupecompetence
             if (isset($Groupecompetence_tab['libelle'])) 
             {
                 $Groupecompetence->setLibelle($Groupecompetence_tab['libelle']);
             }
-            $grpecompetence_tab = isset($Groupecompetence_tab['competence'])?$Groupecompetence_tab['competence']:[];
+            $grpecompetence_tab = isset($Groupecompetence_tab['competences'])?$Groupecompetence_tab['competences']:[];
             if (!empty($grpecompetence_tab)) 
             {
-                foreach ($grpecompetence_tab as $key => $value) {        
+                foreach ($grpecompetence_tab as $key => $value) {  
+                    
                         if (isset ($value['id']))
                         { 
-                            dd($value['action']);
-                            // Affectation du competence
+                            // Affectation d'une competence
                             if (isset ($value['action']) && ($value['action'])=="affecter")
-                            {
-                                
+                            {  
                                 $Groupecompetence->addcompetence($repcompet->find($value['id']));
                             }
-                            // Desaffectation de competence
+                            // Desaffectation d'une competence
                             else if (isset ($value['action']) && $value['action']=="desaffecter")
-                            {
-                                
+                            {  
                                 $Groupecompetence->Removecompetence($repcompet->find($value['id']));
                             }
                         
@@ -143,7 +142,6 @@ class GroupecompetenceController extends AbstractController
             $errors = $serializer->serialize($errors,"json");
             return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
         }
-        
         $manager->persist($Groupecompetence);
         $manager->flush();
     }

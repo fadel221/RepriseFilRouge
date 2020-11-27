@@ -71,7 +71,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  * @ORM\Entity(repositoryClass=GroupeTagsRepository::class)
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  */
-class GroupeTags extends EntityDataPersister
+class GroupeTags //extends EntityDataPersister
 {
     /**
      * @ORM\Id
@@ -81,9 +81,9 @@ class GroupeTags extends EntityDataPersister
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      * @Groups({"Grptags_read","Grptags_tags_read"})
-     *  @Assert\NotBlank()
+     * @Assert\NotBlank()
      */
     private $libelle;
 
@@ -158,4 +158,5 @@ class GroupeTags extends EntityDataPersister
 
         return $this;
     }
+
 }

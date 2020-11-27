@@ -84,7 +84,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  */
 
-class User  implements UserInterface   
+class User  implements UserInterface  
 {
     /**
      * @ORM\Id
@@ -96,6 +96,7 @@ class User  implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read"})
+     * @Assert\NotBlank()
      */
     private $username;
 
@@ -105,7 +106,7 @@ class User  implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
-     * 
+     * @Assert\NotBlank()
      */
     private $password;
 
@@ -126,12 +127,14 @@ class User  implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read"})
+     * @Assert\NotBlank()
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read"})
+     * @Assert\NotBlank()
      */
     private $nom;
 

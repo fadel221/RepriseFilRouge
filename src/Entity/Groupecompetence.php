@@ -2,16 +2,18 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\GroupecompetenceRepository;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-use DateTime;
+use App\DataPersister\EntityDataPersister;
 
 /**
  * @ApiResource(
@@ -40,6 +42,12 @@ use DateTime;
  *              "path"="admin/groupecompetences/competences",
  *              "normalization_context"={"groups"={"Grpcompetence_competence_read"},"enable_max_depth"=true}
  *              },
+ *              "get"={
+ *              "security"="is_granted('ROLE_FORMATEUR')", 
+ *              "security_message"="Vous n'avez pas acces a cette ressource.",
+ *              "path"="admin/groupecompetences/{id}/competences",
+ *              "normalization_context"={"groups"={"Grpcompetence_competence_read"},"enable_max_depth"=true}
+ *              },
  *     },
  *     
  *     itemOperations={
@@ -54,16 +62,12 @@ use DateTime;
  *              "path"="admin/groupecompetences/{id}",
  *         },
  *         "update_groupecompetence"={
- *              "method"="PATCH",
- *              "security"="is_granted('ROLE_ADMIN')", 
- *              "security_message"="Vous n'avez pas ce privilege.",
- *              "path"="admin/groupecompetences/{id}",
- *         },
- *         "update_groupecompetence"={
  *              "method"="PUT",
  *              "security_post_denormalize"="is_granted('ROLE_ADMIN')", 
  *              "security_post_denormalize_message"="Vous n'avez pas ce privilege.",
  *              "path"="admin/groupecompetences/{id}",
+ *              "normalization_context"={"groups"={"update_Grpcompetence_read"},"enable_max_depth"=true}
+
  *         },
  *     },
  * 
@@ -71,7 +75,7 @@ use DateTime;
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  * @ORM\Entity(repositoryClass=GroupecompetenceRepository::class)
  */
-class Groupecompetence
+class Groupecompetence extends EntityDataPersister
 {
     /**
      * @ORM\Id
@@ -82,59 +86,68 @@ class Groupecompetence
 
     /**
      * @ORM\ManyToMany(targetEntity=Competence::class, mappedBy="groupecompetence",cascade={"persist"})
-     * @Groups({"Grpcompetence_read"})
+     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read"})
+     * @ApiSubresource()
      */
     private $competences;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"Grpcompetence_read"})
+     * @Groups({"Grpcompetence_read","update_Grpcompetence_read"})
      */
     private $isDeleted;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @Groups({"Grpcompetence_read"})
+     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read"})
      */
     private $type;
 
     /**
      * @ORM\Column(type="string", length=255)
      *  @Assert\NotBlank()
-     * @Groups({"Grpcompetence_read"})
+     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read"})
      */
     private $nom;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"Grpcompetence_read"})
+     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read"})
      */
     private $dateCreation;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"Grpcompetence_read"})
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read"})
+     * @Assert\NotBlank()
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"Grpcompetence_read"})
+     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read"})
+     * @Assert\NotBlank()
      */
     private $descriptif;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="groupecompetences")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $user;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Referentiel::class, mappedBy="groupecompetences")
+     */
+    private $referentiels;
 
     public function __construct()
     {
         $this->competences = new ArrayCollection();
         $this->dateCreation=new DateTime();
         $this->setisDeleted(false);
+        $this->referentiels = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -249,6 +262,33 @@ class Groupecompetence
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Referentiel[]
+     */
+    public function getReferentiels(): Collection
+    {
+        return $this->referentiels;
+    }
+
+    public function addReferentiel(Referentiel $referentiel): self
+    {
+        if (!$this->referentiels->contains($referentiel)) {
+            $this->referentiels[] = $referentiel;
+            $referentiel->addGroupecompetence($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReferentiel(Referentiel $referentiel): self
+    {
+        if ($this->referentiels->removeElement($referentiel)) {
+            $referentiel->removeGroupecompetence($this);
+        }
 
         return $this;
     }

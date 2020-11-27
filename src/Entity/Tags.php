@@ -6,12 +6,13 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\TagsRepository;
 use App\DataPersister\TagsDataPersister;
 use ApiPlatform\Core\Annotation\ApiFilter;
+use App\DataPersister\EntityDataPersister;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 /**
  * @ApiResource(
  * attributes={
@@ -69,7 +70,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass=TagsRepository::class)
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  */
-class Tags //extends TagsDataPersister
+class Tags //extends EntityDataPersister
 {
     /**
      * @ORM\Id
@@ -87,7 +88,7 @@ class Tags //extends TagsDataPersister
     private $descriptif;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      * @Groups({"tags_read","Grptags_tags_read"})
      * @Assert\NotBlank()
      */
@@ -175,5 +176,10 @@ class Tags //extends TagsDataPersister
         }
 
         return $this;
+    }
+
+    public function RemoveAllGroupeTags()
+    {
+        $this->groupeTags=null;
     }
 }

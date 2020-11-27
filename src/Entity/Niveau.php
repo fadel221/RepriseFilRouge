@@ -8,13 +8,14 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use App\DataPersister\EntityDataPersister;
 use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource()
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  * @ORM\Entity(repositoryClass=NiveauRepository::class)
  */
-class Niveau
+class Niveau extends EntityDataPersister
 {
     /**
      * @ORM\Id
@@ -31,29 +32,35 @@ class Niveau
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"competence_read","Grpcompetence_read"})
+     * @Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read"})
      *  @Assert\NotBlank()
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"competence_read","Grpcompetence_read"})
+     * @Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read"})
      *  @Assert\NotBlank()
      */
     private $criterePerformance;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"competence_read","Grpcompetence_read"})
+     * @Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read"})
      *  @Assert\NotBlank()
      */
     private $critereEvaluation;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read"})
      */
     private $groupeaction;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isDeleted;
 
     public function getId(): ?int
     {
@@ -112,6 +119,18 @@ class Niveau
     public function setGroupeAction(string $groupeaction): self
     {
         $this->groupeaction = $groupeaction;
+        return $this;
+    }
+
+    public function getIsDeleted(): ?bool
+    {
+        return $this->isDeleted;
+    }
+
+    public function setIsDeleted(bool $isDeleted): self
+    {
+        $this->isDeleted = $isDeleted;
+
         return $this;
     }
 }

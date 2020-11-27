@@ -10,6 +10,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use App\DataPersister\EntityDataPersister;
 use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource(
@@ -72,7 +73,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass=ProfilSortieRepository::class)
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  */
-class ProfilSortie
+class ProfilSortie extends EntityDataPersister
 {
     /**
      * @ORM\Id

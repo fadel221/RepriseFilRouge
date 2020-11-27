@@ -1,15 +1,15 @@
 <?php
-
 namespace App\DataPersister;
 
 
 
-
 use App\Entity\User;
-use ApiPlatform\Core\DataPersister\DataPersisterInterface;
+use App\Entity\Tags;
 use Doctrine\ORM\EntityManagerInterface;
+use ApiPlatform\Core\DataPersister\DataPersisterInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
-class UserDataPersister implements DataPersisterInterface
+class DataPersister implements DataPersisterInterface
 {
     private $entityManager;
 
@@ -17,23 +17,24 @@ class UserDataPersister implements DataPersisterInterface
     {
         $this->entityManager = $entityManager;
     }
-    
+    /**
+     * @param Tags data
+     */
     public function supports($data): bool
     {
-        return $data instanceof User;
+        return $data instanceof Tags;
     }
-    /**
-     * @param User $data
-     */
-    public function persist($data,array $context =[])
+    
+    public function persist($data)
     {
         $this->entityManager->persist($data);
         $this->entityManager->flush();
     }
     public function remove($data)
     {
-        //Archivage du User
         $data->setisDeleted(true);//Mettre le statut à true pour montrer qu'on l'archive
+        //Suppression du lien entre le Tags et le grpe de Tags
+        $data->RemoveAllGroupeTags();
         $this->entityManager->persist($data);//Et on renvoie à la BD
         $this->entityManager->flush();
     }

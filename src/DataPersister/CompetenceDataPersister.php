@@ -1,24 +1,15 @@
 <?php
-
-
 namespace App\DataPersister;
 
 
 
-
-
-use App\Entity\Tags;
 use App\Entity\User;
-use App\Entity\Niveau;
 use App\Entity\Competence;
-use App\Entity\GroupeTags;
-use App\Entity\Groupecompetence;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
-use App\Entity\ProfilSortie;
-use App\Entity\Referentiel;
+use Doctrine\Common\Collections\ArrayCollection;
 
-class EntityDataPersister implements DataPersisterInterface
+class CompetenceDataPersister implements DataPersisterInterface
 {
     private $entityManager;
 
@@ -26,14 +17,12 @@ class EntityDataPersister implements DataPersisterInterface
     {
         $this->entityManager = $entityManager;
     }
-    
+    /**
+     * @param Competence $data
+     */
     public function supports($data): bool
     {
-        if ($data instanceof User ||$data instanceof Tags ||$data instanceof GroupeTags ||$data instanceof Competence ||$data instanceof Groupecompetence ||$data instanceof Niveau || $data instanceof Referentiel || $data instanceof ProfilSortie)
-        {
-            return true;
-        }
-        return false;
+        return $data instanceof Competence;
     }
     
     public function persist($data)
@@ -44,7 +33,17 @@ class EntityDataPersister implements DataPersisterInterface
     public function remove($data)
     {
         $data->setisDeleted(true);//Mettre le statut à true pour montrer qu'on l'archive
-       // $this->entityManager->persist($data);//Et on renvoie à la BD
+        //Suppression du lien entre la competence et le grpe de competences
+        $data->RemoveAllGroupecompetences();
+        $niveaux=$data->getNiveau();
+        foreach ($niveaux as $niveau)
+        {
+            //Archivage du Niveau de la competence
+            $niveau->setisDeleted(true);
+            $this->entityManager->persist($niveau);
+            $this->entityManager->flush();
+        }
+        $this->entityManager->persist($data);//Et on renvoie à la BD
         $this->entityManager->flush();
     }
 }

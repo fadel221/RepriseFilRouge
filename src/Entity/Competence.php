@@ -10,6 +10,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use App\DataPersister\EntityDataPersister;
 use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource(
@@ -60,7 +61,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass=CompetenceRepository::class)
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  */
-class Competence
+class Competence extends EntityDataPersister
 {
     /**
      * @ORM\Id
@@ -70,21 +71,21 @@ class Competence
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * Groups({"competence_read","Grpcompetence_read"})
+     * @ORM\Column(type="string",length=255)
+     * Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read"})
      * @Assert\NotBlank()
      */
     private $libelle;
 
     /*
      *@ORM\Column(type="boolean")
-     *@Groups({"competence_read","Grpcompetence_read"})
+     *@Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read"})
      */
     private $isDeleted;
 
     /**
      * @ORM\OneToMany(targetEntity=Niveau::class, mappedBy="competence",cascade={"persist"})
-     * @Groups({"competence_read","Grpcompetence_read"})
+     * @Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read"})
      */
     private $niveau;
 
@@ -180,5 +181,10 @@ class Competence
         $this->groupecompetence->removeElement($groupecompetence);
 
         return $this;
+    }
+
+    public function RemoveAllGroupecompetences()
+    {
+        $this->groupecompetence=null;
     }
 }
