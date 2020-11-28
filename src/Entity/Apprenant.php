@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ApprenantRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -107,6 +109,23 @@ class Apprenant extends User
      */
     private $profilSortie;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Groupe::class, mappedBy="apprenant")
+     */
+    private $groupes;
+
+    /**
+     * @ORM\OneToMany(targetEntity=PromoBriefApprenant::class, mappedBy="apprenant")
+     */
+    private $promoBriefApprenants;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->groupes = new ArrayCollection();
+        $this->promoBriefApprenants = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -126,6 +145,63 @@ class Apprenant extends User
     public function setProfilSortie(?ProfilSortie $profilSortie): self
     {
         $this->profilSortie = $profilSortie;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Groupe[]
+     */
+    public function getGroupes(): Collection
+    {
+        return $this->groupes;
+    }
+
+    public function addGroupe(Groupe $groupe): self
+    {
+        if (!$this->groupes->contains($groupe)) {
+            $this->groupes[] = $groupe;
+            $groupe->addApprenant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupe(Groupe $groupe): self
+    {
+        if ($this->groupes->removeElement($groupe)) {
+            $groupe->removeApprenant($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PromoBriefApprenant[]
+     */
+    public function getPromoBriefApprenants(): Collection
+    {
+        return $this->promoBriefApprenants;
+    }
+
+    public function addPromoBriefApprenant(PromoBriefApprenant $promoBriefApprenant): self
+    {
+        if (!$this->promoBriefApprenants->contains($promoBriefApprenant)) {
+            $this->promoBriefApprenants[] = $promoBriefApprenant;
+            $promoBriefApprenant->setApprenant($this);
+        }
+
+        return $this;
+    }
+
+    public function removePromoBriefApprenant(PromoBriefApprenant $promoBriefApprenant): self
+    {
+        if ($this->promoBriefApprenants->removeElement($promoBriefApprenant)) {
+            // set the owning side to null (unless already changed)
+            if ($promoBriefApprenant->getApprenant() === $this) {
+                $promoBriefApprenant->setApprenant(null);
+            }
+        }
 
         return $this;
     }

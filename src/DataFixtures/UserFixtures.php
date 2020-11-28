@@ -38,7 +38,7 @@ class UserFixtures extends Fixture
                 $users->setUsername(strtolower($faker->name()));
                 $password = $this->encoder->encodePassword($users, "passe");
                 $users->setPassword($password);
-                $this->addReference('USER'.$i+1,$users);
+                //$this->addReference('USER'.$i+1,$users);
                 $users->setProfil($this->getReference(($ref[$i])));
                 $manager->persist($users);
                 $manager->flush();

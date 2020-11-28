@@ -16,67 +16,52 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *  attributes={
  *          "security"="is_granted('ROLE_ADMIN')",
  *          "pagination_items_per_page"=10, 
- *          "normalization_context"={"groups"={"brief_read","referentiel_read","referentiel_groupecompetence_read"}}
+ *          "normalization_context"={"groups"={"referentiel_read"}}
  *     },
- * 
- *     collectionOperations={
+ * collectionOperations={
  *          "add_referentiel"={
  *              "method"="POST",
  *              "path"="/admin/referentiels",
  *              "security"="is_granted('ROLE_ADMIN')",
  *              "security_message"="Vous n'avez pas le privilege",
- *              "normalization_context"={"groups"={"referentiel_read","referentiel_groupecompetence_read"}},
- *              "defaults"={"id"=null}
+ *              "defaults"={"id"=null},
  *          },
  *         "get"={
  *              "security"="is_granted('ROLE_ADMIN')", 
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
  *              "path"="admin/referentiels",
- *              "defaults"={"id"=null}
- *   
  *          },
- *          "get"={
+ *          "getM"={
  *              "security"="is_granted('ROLE_ADMIN')", 
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
  *              "path"="admin/referentiels/{id}/groupecompetences",
- *              "defaults"={"id"=null}
- *   
+ *              "method"="GET"
  *          },
  *           "show_groupecompetence"={
  *              "method"="GET",
  *              "security"="is_granted('ROLE_CM')", 
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
  *              "path"="admin/referentiels",
- *              "normalization_context"={"groups"={"referentiel_read","referentiel_groupecompetence_read"}},
- *              "defaults"={"id"=null}
  *              },
- *              
  *           "show_referentiel_groupecompetence"={
  *              "method"="GET",
  *              "security"="is_granted('ROLE_CM')", 
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
  *              "path"="admin/referentiels/groupecompetences",
- *              "normalization_context"={"groups"={"referentiel_groupecompetence_read","referentiel_groupecompetence_read","user_details_read"}},
- *              "defaults"={"id"=null}
  *              },
- * 
  *            "show_referentiel_groupecompetence_competence"=
  *              {
-    *              "method"="GET",
-    *              "security"="is_granted('ROLE_CM')", 
-    *              "security_message"="Vous n'avez pas acces a cette ressource.",
-    *              "path"="admin/referentiels/groupecompetences/{idr}/competences/{idg}",
-    *              "normalization_context"={"groups"={"referentiel_groupecompetence_read","referentiel_groupecompetence_read","user_details_read"}},
-    *              "defaults"={"id"=null}
+ *              "method"="GET",
+ *              "security"="is_granted('ROLE_CM')", 
+ *              "security_message"="Vous n'avez pas acces a cette ressource.",
+ *              "path"="admin/referentiels/{idr}/groupecompetences/{idg}",
  *              }
  *     },
- *     
  *     itemOperations={
  *         "get"={
  *              "security"="is_granted('ROLE_ADMIN')", 
  *              "security_message"="Vous n'avez pas ce privilege.",
- *              "path"="admin/referentiels/{id}",
- *              "defaults"={"id"=null}
+ *              "path"="admin/referentiels/{id}",   
  *          },
  *         "delete"={
  *              "security"="is_granted('ROLE_ADMIN')",
@@ -99,7 +84,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * )
  * @ORM\Entity(repositoryClass=ReferentielRepository::class)
  */
-class Referentiel //extends EntityDataPersister
+class Referentiel 
 {
     /**
      * @ORM\Id
@@ -121,7 +106,7 @@ class Referentiel //extends EntityDataPersister
     private $presentation;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="blob")
      * @Groups({"referentiel_read","referentiel_groupecompetence_read"})
      */
     private $programme;
@@ -141,6 +126,7 @@ class Referentiel //extends EntityDataPersister
     /**
      * @ORM\ManyToMany(targetEntity=Groupecompetence::class, inversedBy="referentiels",cascade={"persist"}))
      * @ApiSubresource()
+     * @Groups({"referentiel_read","referentiel_groupecompetence_read"})
      */
     private $groupecompetences;
 
@@ -149,10 +135,16 @@ class Referentiel //extends EntityDataPersister
      */
     private $briefs;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Promo::class, mappedBy="referentiel")
+     */
+    private $promo;
+
     public function __construct()
     {
         $this->groupecompetences = new ArrayCollection();
         $this->briefs = new ArrayCollection();
+        $this->promo = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -268,6 +260,36 @@ class Referentiel //extends EntityDataPersister
             // set the owning side to null (unless already changed)
             if ($brief->getReferentiel() === $this) {
                 $brief->setReferentiel(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Promo[]
+     */
+    public function getPromo(): Collection
+    {
+        return $this->promo;
+    }
+
+    public function addPromo(Promo $promo): self
+    {
+        if (!$this->promo->contains($promo)) {
+            $this->promo[] = $promo;
+            $promo->setReferentiel($this);
+        }
+
+        return $this;
+    }
+
+    public function removePromo(Promo $promo): self
+    {
+        if ($this->promo->removeElement($promo)) {
+            // set the owning side to null (unless already changed)
+            if ($promo->getReferentiel() === $this) {
+                $promo->setReferentiel(null);
             }
         }
 

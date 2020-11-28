@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  * @ORM\Entity(repositoryClass=NiveauRepository::class)
  */
-class Niveau extends EntityDataPersister
+class Niveau 
 {
     /**
      * @ORM\Id
@@ -32,28 +32,28 @@ class Niveau extends EntityDataPersister
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read"})
+     * @Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","competence_write"})
      *  @Assert\NotBlank()
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read"})
+     * @Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","competence_write"})
      *  @Assert\NotBlank()
      */
     private $criterePerformance;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read"})
+     * @Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","competence_write"})
      *  @Assert\NotBlank()
      */
     private $critereEvaluation;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read"})
+     * @Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","competence_write"})
      */
     private $groupeaction;
 
@@ -61,6 +61,11 @@ class Niveau extends EntityDataPersister
      * @ORM\Column(type="boolean")
      */
     private $isDeleted;
+
+    public function __construct()
+    {
+        $this->setIsDeleted(false);
+    }
 
     public function getId(): ?int
     {

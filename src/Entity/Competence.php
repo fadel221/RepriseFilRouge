@@ -17,17 +17,19 @@ use Symfony\Component\Validator\Constraints as Assert;
  * attributes={
  *          "pagination_items_per_page"=10,
  *          "normalization_context"={"groups"={"competence_read"},"enable_max_depth"=true}
+ *          
  *      },
  *     collectionOperations={
  *          "add_competence"={
  *              "method"="POST",
  *              "path"="admin/competences",
- *              "security"="is_granted('ROLE_CM')",  
+ *              "security"="is_granted('ROLE_ADMIN')",  
  *              "security_post_denormalize_message"="Vous n'avez pas ce privilege.",
+ *              "denormalization_context"={"groups"={"competence_write"}}
  *          },
  *         "show_competence"={
  *              "method"="GET",
- *              "security"="is_granted('ROLE_CM')", 
+ *              "security"="is_granted('ROLE_FORMATEUR')", 
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
  *              "path"="admin/competences"
  *              },
@@ -35,7 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     
  *     itemOperations={
  *         "get"={
- *              "security"="is_granted('ROLE_CM')",
+ *              "security"="is_granted('ROLE_FORMATEUR')",
  *              "security_message"="Vous n'avez pas ce privilege.",
  *              "path"="admin/competences/{id}",
  *         }, 
@@ -49,19 +51,21 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "security"="is_granted('ROLE_ADMIN')", 
  *              "security_message"="Vous n'avez pas ce privilege.",
  *              "path"="admin/competences/{id}",
+ *              "denormalization_context"={"groups"={"competence_write"}}
  *         },
  *         "update_competence"={
  *              "method"="PUT",
  *              "security"="is_granted('ROLE_ADMIN')",
  *              "security_post_denormalize_message"="Vous n'avez pas ce privilege.",
  *              "path"="admin/competences/{id}",
+ *              "denormalization_context"={"groups"={"competence_write"}}
  *         },
  *     },
  * )
  * @ORM\Entity(repositoryClass=CompetenceRepository::class)
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  */
-class Competence extends EntityDataPersister
+class Competence 
 {
     /**
      * @ORM\Id
@@ -72,7 +76,7 @@ class Competence extends EntityDataPersister
 
     /**
      * @ORM\Column(type="string",length=255)
-     * Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read"})
+     * Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","competence_write"})
      * @Assert\NotBlank()
      */
     private $libelle;
@@ -85,13 +89,13 @@ class Competence extends EntityDataPersister
 
     /**
      * @ORM\OneToMany(targetEntity=Niveau::class, mappedBy="competence",cascade={"persist"})
-     * @Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read"})
+     * @Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","competence_write"})
      */
     private $niveau;
 
     /**
      * @ORM\ManyToMany(targetEntity=Groupecompetence::class, inversedBy="competences")
-     * @Groups({"competence_read"})
+     * @Groups({"competence_read","competence_write"})
      */
     private $groupecompetence;
 

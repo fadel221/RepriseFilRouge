@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
-class DataPersister implements DataPersisterInterface
+class TagsDataPersister implements DataPersisterInterface
 {
     private $entityManager;
 

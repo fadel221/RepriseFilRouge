@@ -19,7 +19,7 @@ class ReferentielFixtures extends Fixture
             $Referentiel -> setProgramme('programme '.$i);
             $Referentiel -> setCritereAdmission('critere Admission '.$i);
             $Referentiel -> setCritereEvaluation('critere Evaluation '.$i);
-            $Referentiel -> addGroupecompetence($this->getReference('Libelle '.$i));
+            //$Referentiel -> addGroupecompetence($this->getReference('Libelle '.$i));
         }
         $manager->persist($Referentiel);
         $manager->flush();

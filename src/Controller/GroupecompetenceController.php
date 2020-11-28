@@ -35,13 +35,9 @@ class GroupecompetenceController extends AbstractController
     {
         $Groupecompetence_json = $request->getContent();
         $Groupecompetence_tab = $serializer->decode($Groupecompetence_json,"json");
-        //dd($Groupecompetence_tab);
-        $Groupecompetence = new Groupecompetence();
-        $Groupecompetence -> setLibelle($Groupecompetence_tab['libelle']);
-        $Groupecompetence -> setDescriptif($Groupecompetence_tab['descriptif']);
-        $Groupecompetence -> setType($Groupecompetence_tab['type']);
-        $Groupecompetence -> setNom($Groupecompetence_tab['nom']);
         $Competence_tab = $Groupecompetence_tab['competences'];
+        unset($Groupecompetence_tab["competences"]);
+        $Groupecompetence=$serializer->denormalize($Groupecompetence_tab,"App\Entity\Groupecompetence");
         foreach ($Competence_tab as $key => $value) {
             if (isset ($value['id']))
             {
@@ -53,13 +49,10 @@ class GroupecompetenceController extends AbstractController
             else 
                 if (isset ($value['libelle']))
                 {
-                    $competence = new Competence();
-                    $competence -> setLibelle($value['libelle']);
-                    $Groupecompetence -> addCompetence($competence);
-                    
+                    $competence=$serializer->denormalize($value,"App\Entity\Competence");
+                    $Groupecompetence->addCompetence($competence);   
                 }
         }
-        
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $Groupecompetence -> setUser($user);
         $errors = $validator->validate($Groupecompetence);

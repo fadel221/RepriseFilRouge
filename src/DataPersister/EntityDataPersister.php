@@ -29,7 +29,7 @@ class EntityDataPersister implements DataPersisterInterface
     
     public function supports($data): bool
     {
-        if ($data instanceof User ||$data instanceof Tags ||$data instanceof GroupeTags ||$data instanceof Competence ||$data instanceof Groupecompetence ||$data instanceof Niveau || $data instanceof Referentiel || $data instanceof ProfilSortie)
+        if ($data instanceof User ||$data instanceof Tags ||$data instanceof GroupeTags  || $data instanceof Groupecompetence ||$data instanceof Niveau || $data instanceof Referentiel || $data instanceof ProfilSortie)
         {
             return true;
         }

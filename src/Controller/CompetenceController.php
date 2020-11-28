@@ -36,46 +36,28 @@ class CompetenceController extends AbstractController
     {
         $competence_json = $request->getContent();
         $Competence_tab = $serializer->decode($competence_json,"json");
-        $Competence = new Competence();
-        $Competence -> setLibelle($Competence_tab['libelle']);
-        $Niveau_tab = $Competence_tab['niveau'];
-        
-        
-        $Groupecompetence = new Groupecompetence();
-        if (!($Groupecompetence = $grpcmp -> find($Competence_tab["id"]))) {
-            return $this ->json("Groupe de competence non trouvé", Response::HTTP_NOT_FOUND,);
-        }
-        $Competence -> addGroupecompetence($Groupecompetence );
-        
-
-        if (count($Niveau_tab)!=3)
-        {
+        if (count($Competence_tab["niveaux"])!=3)
             return $this -> json(["message" => "Chaque compétence devrait avoir exactement 3 niveaux"],Response::HTTP_BAD_REQUEST);
-        }
-        
-        foreach ($Niveau_tab as $key => $value) {
-            $niveau = new Niveau();
-            $niveau -> setLibelle($value['libelle']);
-            $niveau -> setcritereEvaluation($value['critereEvaluation']);
-            $niveau -> setgroupeAction($value['groupeAction']);
-            $niveau->setCriterePerformance($value['CriterePerformance']);
-            $Competence->addNiveau($niveau);
-        }
-
-
-        /*if (!$this -> isGranted("EDIT",$Competence)) {
-            return $this -> json(["message" => "Cette action vous est interdite"],Response::HTTP_FORBIDDEN);
-        }*/
-
-       /* $errors = $validator->validate($Competence);
+        $Niveau_tab = $Competence_tab['niveaux'];
+        unset($Competence_tab['niveaux']);
+        if (!($Groupecompetence = $grpcmp -> find($Competence_tab["id"])))
+            return $this ->json("Groupe de competence non trouvé", Response::HTTP_NOT_FOUND,);
+        unset($Competence_tab["id"]);
+        $competence = $serializer->denormalize($Competence_tab,"App\Entity\Competence");
+        $competence ->addGroupecompetence($Groupecompetence );
+        if (count($Niveau_tab)!=3)
+            return $this -> json(["message" => "Chaque compétence devrait avoir exactement 3 niveaux"],Response::HTTP_BAD_REQUEST); 
+        $niveaux = $serializer->denormalize($Niveau_tab,"App\Entity\Niveau[]");
+        foreach ($niveaux as $niveau)
+        $competence->addNiveau($niveau);
+       $errors = $validator->validate($competence);
         if (count($errors)){
             $errors = $serializer->serialize($errors,"json");
             return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
-        }*/
-
-        $manager->persist($Competence);
+        }
+        $manager->persist($competence);
         $manager->flush();
-        return $this->json($Competence,Response::HTTP_CREATED);
+        return $this->json($competence,Response::HTTP_CREATED);
     }
 
 
@@ -126,9 +108,7 @@ class CompetenceController extends AbstractController
                         }
                     }
                 }
-            }
-
-             
+        }
         $errors = $validator->validate($competence);
         if (count($errors))
         {
@@ -137,12 +117,8 @@ class CompetenceController extends AbstractController
         }
         $manager->persist($competence);
         $manager->flush();
-        ////dd($competence);
         return $this->json($competence,Response::HTTP_CREATED);
     }
-
-
-    
 }
     
     

@@ -182,7 +182,7 @@ class ReferentielController extends AbstractController
     {
         if ($Referentiel=$repref->find($idr))
         {
-            (if $Groupecompetence= $grpref->find($idg))
+            if ($Groupecompetence=$grpref->find($idg))
             {
                 foreach ($Groupecompetence->getReferentiels() as $ref)
                 {

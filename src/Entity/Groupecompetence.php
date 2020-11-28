@@ -75,12 +75,13 @@ use App\DataPersister\EntityDataPersister;
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  * @ORM\Entity(repositoryClass=GroupecompetenceRepository::class)
  */
-class Groupecompetence extends EntityDataPersister
+class Groupecompetence
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups ({"competence_write"})
      */
     private $id;
 
@@ -93,27 +94,27 @@ class Groupecompetence extends EntityDataPersister
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"Grpcompetence_read","update_Grpcompetence_read"})
+     * @Groups({"Grpcompetence_read","update_Grpcompetence_read","referentiel_read"})
      */
     private $isDeleted;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read"})
+     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read"})
      */
     private $type;
 
     /**
      * @ORM\Column(type="string", length=255)
      *  @Assert\NotBlank()
-     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read"})
+     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read"})
      */
     private $nom;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read"})
+     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read"})
      */
     private $dateCreation;
 
@@ -126,7 +127,7 @@ class Groupecompetence extends EntityDataPersister
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read"})
+     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read"})
      * @Assert\NotBlank()
      */
     private $descriptif;
