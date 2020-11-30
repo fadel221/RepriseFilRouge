@@ -33,7 +33,8 @@ class UserController extends AbstractController
     */
     public function addUser(UserServices $userservice,Request $request,UserPasswordEncoderInterface $encoder,SerializerInterface $serializer,ValidatorInterface $validator,ProfilRepository $profil,EntityManagerInterface $manager)
     {
-        $userservice->addUser($request, $encoder, $serializer, $validator, $profil, $manager);
+        $user=$userservice->addUser($request, $encoder, $serializer, $validator, $profil, $manager);
+        
     }
 
     /**

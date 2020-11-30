@@ -34,7 +34,7 @@ class UserServices
         $avatar = fopen($avatar->getRealPath(),"rb");
         $user["avatar"] = $avatar;
         $profil = $profil->find($user["profil_id"]);
-        // Service qui determine le chemin de la classe à instancier
+        //Service qui determine le chemin de la classe à instancier 
         $userservice=new UserServices();
         $path=$userservice->getPathEntity($profil);
         $user = $serializer->denormalize($user,$path);
@@ -48,11 +48,10 @@ class UserServices
         $user->setisDeleted(false);
         $password = $user->getPassword();
         $user->setPassword($encoder->encodePassword($user,$password));
-        
         $manager->persist($user);
         $manager->flush();
         fclose($avatar);
-        return new JsonResponse($user,Response::HTTP_CREATED,[],true);
+        return $user;
     }
 
     public function UpdateUser(Request $request,UserPasswordEncoderInterface $encoder,SerializerInterface $serializer,ValidatorInterface $validator,UserRepository $userrep,EntityManagerInterface $manager,$id)
@@ -95,6 +94,6 @@ class UserServices
         $manager->persist($user);
         $manager->flush();
         fclose($avatar);
-        return new JsonResponse($user,Response::HTTP_CREATED,[],false);
+        return $user;
     }
 }

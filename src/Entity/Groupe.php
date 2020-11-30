@@ -2,14 +2,92 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\GroupeRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\GroupeRepository;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ * attributes={
+ *          "pagination_items_per_page"=10,
+ *          "normalization_context"={"groups"={"groupe_read"},"enable_max_depth"=true}
+ *      },
+ * 
+ *      collectionOperations={
+ *          "post"={
+ *              "path"="/admin/groupes",
+ *              "security"="is_granted('ROLE_ADMIN')",
+ *              "security_message"="Vous n'avez pas le privilege",
+ *              "denormalization_context"={"groups"={"groupe_read"}}
+ *          },
+ *         "get"={
+ *              "security"="is_granted('ROLE_ADMIN')", 
+ *              "security_message"="Vous n'avez pas acces a cette ressource.",
+ *              "path"="admin/groupes",
+ *              "normalization_context"={"groups"={"groupe_read"}}
+ *          },
+ *          "post"=
+ *          {
+ *              "security"="is_granted('ROLE_ADMIN')",
+ *              "method"="POST", 
+ *              "security_message"="Vous n'avez pas ces privileges.",
+ *              "normalization_context"={"groups"={"groupe_read"}},
+ *              "path"="admin/groupes",  
+ *          },
+ * 
+ *          
+ *     },
+ *     
+ *     itemOperations={
+ *         "get"={
+ *              "security"="is_granted('ROLE_ADMIN')", 
+ *              "security_message"="Vous n'avez pas ces privileges.",
+ *              "normalization_context"={"groups"={"groupe_read"}},
+ *              "path"="admin/groupes/{id}",
+ *              "requirements"={"id"="\d+"},
+ *              "defaults"={"id"=null}
+ *          },
+ *           "get"={
+ *              "security"="is_granted('ROLE_CM')", 
+ *              "security_message"="Vous n'avez pas ces privileges.",
+ *              "normalization_context"={"groups"={"groupe_read"}},
+ *              "path"="groupes/{id}",
+ *              "requirements"={"id"="\d+"},
+ *              "defaults"={"id"=null}
+ *          },
+ * 
+ *           
+ *         "delete"={
+ *              "security"="is_granted('ROLE_ADMIN')",
+ *              "security_message"="Vous n'avez pas ces privileges.",
+ *              "path"="admin/groupes/{id}",
+ *              "requirements"={"id"="\d+"},
+ *          },
+ *         "patch"={
+ *              "security"="is_granted('ROLE_ADMIN')", 
+ *              "security_message"="Vous n'avez pas ces privileges.",
+ *              "path"="admin/groupes/{id}",
+ *              "requirements"={"id"="\d+"},
+ *          },
+ *         "put"={
+ *              "security_post_denormalize"="is_granted('ROLE_FORMATEUR')", 
+ *              "security_message"="Vous n'avez pas ces privileges.",
+ *              "path"="admin/groupes/{id}",
+ *              "requirements"={"id"="\d+"},
+ *          },
+ *          "update_user"=
+ *          {
+ *              "security_post_denormalize"="is_granted('ROLE_FORMATEUR')", 
+ *              "security_message"="Vous n'avez pas ces privileges.",
+ *              "path"="groupes/{id}",
+ *              "requirements"={"id"="\d+"},
+ *              "method"="PUT"
+ *          }
+ *     },
+ * )
  * @ORM\Entity(repositoryClass=GroupeRepository::class)
  */
 class Groupe
@@ -22,18 +100,39 @@ class Groupe
     private $id;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"groupe_read"})
+     */
+    private $type;
+
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"groupe_read"})
+     */
+    private $isClotured;
+
+    /**
+     * @ORM\Column(type="date")
+     * @Groups({"groupe_read"})
+     */
+    private $dateCreation;
+
+    /**
      * @ORM\ManyToOne(targetEntity=Promo::class, inversedBy="groupe")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"groupe_read"})
      */
     private $promo;
 
     /**
      * @ORM\ManyToMany(targetEntity=Apprenant::class, inversedBy="groupes")
+     * @Groups({"groupe_read"})
      */
     private $apprenant;
 
     /**
      * @ORM\ManyToMany(targetEntity=Formateur::class, inversedBy="groupes")
+     * @Groups({"groupe_read"})
      */
     private $formateur;
 
@@ -46,6 +145,39 @@ class Groupe
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    public function getisClotured(): ?bool
+    {
+        return $this->isClotured;
+    }
+
+    public function setisClotured(bool $isClotured): self
+    {
+        $this->isClotured = $isClotured;
+        return $this;
+    }
+
+    public function getDateCreation(): ?\DateTimeInterface
+    {
+        return $this->dateCreation;
+    }
+
+    public function setDateCreation(\DateTimeInterface $dateCreation): self
+    {
+        $this->dateCreation = $dateCreation;
+        return $this;
     }
 
     public function getPromo(): ?Promo

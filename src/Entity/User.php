@@ -112,7 +112,7 @@ class User  implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read"})
+     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read"})
      * @Assert\Email()
      */
     private $email;
@@ -126,14 +126,14 @@ class User  implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read"})
+     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read"})
      * @Assert\NotBlank()
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read"})
+     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read"})
      * @Assert\NotBlank()
      */
     private $nom;

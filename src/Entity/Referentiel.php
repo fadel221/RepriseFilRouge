@@ -19,13 +19,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "normalization_context"={"groups"={"referentiel_read"}}
  *     },
  * collectionOperations={
- *          "add_referentiel"={
- *              "method"="POST",
- *              "path"="/admin/referentiels",
- *              "security"="is_granted('ROLE_ADMIN')",
- *              "security_message"="Vous n'avez pas le privilege",
- *              "defaults"={"id"=null},
- *          },
+ * 
+ *          "post"=
+ *              {
+ *                 "path"="/admin/referentiels",
+ *                 "security"="is_granted('ROLE_ADMIN')",
+ *                 "security_message"="Vous n'avez pas le privilege",
+ *                 "denormalization_context"={"groups"={"referentiel:write"}}
+ *              },
  *         "get"={
  *              "security"="is_granted('ROLE_ADMIN')", 
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
@@ -96,37 +97,37 @@ class Referentiel
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"referentiel_read","referentiel_groupecompetence_read"})
+     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read"})
      */
     private $libelle;
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"referentiel_read","referentiel_groupecompetence_read"})
+     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read"})
      */
     private $presentation;
 
     /**
-     * @ORM\Column(type="blob")
-     * @Groups({"referentiel_read","referentiel_groupecompetence_read"})
+     * @ORM\Column(type="string",length=255)
+     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read"})
      */
     private $programme;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"referentiel_read","referentiel_groupecompetence_read"})
+     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read"})
      */
     private $critereAdmission;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"referentiel_read","referentiel_groupecompetence_read"})
+     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read"})
      */
     private $critereEvaluation;
 
     /**
      * @ORM\ManyToMany(targetEntity=Groupecompetence::class, inversedBy="referentiels",cascade={"persist"}))
      * @ApiSubresource()
-     * @Groups({"referentiel_read","referentiel_groupecompetence_read"})
+     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read"})
      */
     private $groupecompetences;
 

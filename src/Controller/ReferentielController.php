@@ -17,29 +17,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ReferentielController extends AbstractController
 {
-    /**
-     * @Route(
-     *     path="/api/admin/referentiels",
-     *     methods={"POST"},
-     *     defaults={
-     *          "__controller"="App\Controller\ReferentielController::addReferentiel",
-     *          "__api_resource_class"=Referentiel::class,
-     *          "__api_collection_operation_name"="add_referentiel"
-     *     }
-     * )
-    */
+    
     public function addReferentiel(Request $request,SerializerInterface $serializer,ValidatorInterface $validator,EntityManagerInterface $manager,GroupecompetenceRepository $grp)
     {
-        $Referentiel_json = $request -> getContent();
-        $Referentiel_tab = $serializer -> decode($Referentiel_json,"json");
-        $Referentiel = new Referentiel();
-        $Referentiel -> setLibelle($Referentiel_tab['libelle']);
-        $Referentiel -> setPresentation($Referentiel_tab['presentation']);
-        $Referentiel -> setProgramme($Referentiel_tab['programme']);
-        $Referentiel -> setCritereAdmission($Referentiel_tab['critereAdmission']);
-        $Referentiel -> setCritereEvaluation($Referentiel_tab['critereEvaluation']);
-        
+        $Referentiel_tab = $request->request->all();
+        $programme = $request->files->get("programme");
+       // $programme = fopen($programme->getRealPath(),"rb");
+        //$user["programme"] = $programme;
         $Groupecompetence_tab = $Referentiel_tab['groupecompetences'];
+        unset($Referentiel_tab['groupecompetences']);
+        $Referentiel = $serializer->denormalize($Referentiel_tab,'App\Entity\Referentiel');
+        dd($Referentiel); 
         foreach ($Groupecompetence_tab as $key => $value) {
             if (isset ($value['id'])) 
             {
@@ -126,7 +114,6 @@ class ReferentielController extends AbstractController
                 else{
                 if(isset($value['libelle'])) {
                    $groupecompetences -> setLibelle($value['libelle']);
-                   
                    $Referentiel -> addGroupecompetence($groupecompetences);
                 }
                 if(isset($value['descriptif'])){
@@ -186,8 +173,8 @@ class ReferentielController extends AbstractController
             {
                 foreach ($Groupecompetence->getReferentiels() as $ref)
                 {
-                    if ($ref===$Referentiel)
-                    {
+                    if ($ref==$Referentiel)
+                    { 
                         return $this -> json($Groupecompetence, Response::HTTP_OK,);
                     }
                 }

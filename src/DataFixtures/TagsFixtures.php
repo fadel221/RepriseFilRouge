@@ -10,16 +10,19 @@ class TagsFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        $tags=['PHP/MySQL','JQUERY','HTML/CSS','Symfony','Angular'];
-        foreach($tags as $tag)
+        $tags=['PHP/SQL','JQUER','HTML/CSS/BOOTSTRAP','CMS','WORDPRESS'];
+        for($i=0;$i<5 ;$i++)
         {
             $Tags=new Tags();
-            $Tags->setLibelle($tag);
-            $Tags->setDescriptif("Voici le descriptif de ".$tag);
+            $Tags->setLibelle($tags[$i]);
+            $Tags->setDescriptif("Voici le descriptif de ".($i+1));
             $Tags->setIsDeleted(false);
+            $this->addReference("Tags".($i+1),$Tags);
             $manager->persist($Tags);
-            $manager->flush();
+            
         }
+
+        $manager->flush();
         
     }
 }

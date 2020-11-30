@@ -16,12 +16,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  * attributes={
  *          "pagination_items_per_page"=10,
- *          "normalization_context"={"groups"={"competence_read"},"enable_max_depth"=true}
- *          
+ *          "normalization_context"={"groups"={"competence_read"},"enable_max_depth"=true},
  *      },
  *     collectionOperations={
- *          "add_competence"={
- *              "method"="POST",
+ *          "post"={
+ *              
  *              "path"="admin/competences",
  *              "security"="is_granted('ROLE_ADMIN')",  
  *              "security_post_denormalize_message"="Vous n'avez pas ce privilege.",
@@ -76,7 +75,7 @@ class Competence
 
     /**
      * @ORM\Column(type="string",length=255)
-     * Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","competence_write"})
+     * @Groups({"competence_write","competence_read","Grpcompetence_read","Grpcompetence_competence_read"})
      * @Assert\NotBlank()
      */
     private $libelle;

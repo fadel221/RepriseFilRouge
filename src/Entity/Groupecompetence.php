@@ -81,7 +81,7 @@ class Groupecompetence
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups ({"competence_write"})
+     * @Groups ({"competence_write","referentiel:write"})
      */
     private $id;
 

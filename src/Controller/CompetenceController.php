@@ -21,17 +21,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class CompetenceController extends AbstractController
 {
-    /**
-     * @Route(
-     *     path="/api/admin/competences",
-     *     methods={"POST"},
-     *     defaults={
-     *          "__controller"="App\Controller\CompetenceController::addCompetence",
-     *          "__api_resource_class"=Competence::class,
-     *          "__api_collection_operation_name"="add_competence"
-     *     }
-     * )
-    */
+    
     public function addCompetence(Request $request,SerializerInterface $serializer,ValidatorInterface $validator,EntityManagerInterface $manager, GroupecompetenceRepository $grpcmp)
     {
         $competence_json = $request->getContent();
@@ -81,6 +71,7 @@ class CompetenceController extends AbstractController
         {
             if (isset ($Competence_tab['id']))
             {
+                //Affectation
                 $competence->removeGroupecompetence($grpcmp->find($Competence_tab['id']));
             }
             if (isset($Competence_tab['libelle']))

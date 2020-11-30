@@ -1,20 +1,23 @@
 <?php
 namespace App\DataPersister;
 
-use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\User;
 use App\Entity\Competence;
+use App\Repository\CompetenceRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use ApiPlatform\Core\DataPersister\DataPersisterInterface;
+use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 
 class CompetenceDataPersister implements ContextAwareDataPersisterInterface
 {
     private $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
+    private $competencerepository;
+    
+    public function __construct(EntityManagerInterface $entityManager,CompetenceRepository $competencerepository)
     {
         $this->entityManager = $entityManager;
+        $this->competencerepository=$competencerepository;
     }
     /**
      * @param Competence $data
@@ -26,10 +29,11 @@ class CompetenceDataPersister implements ContextAwareDataPersisterInterface
 
     public function persist($data, array $context = [])
     {
+        dd($data);
         if (isset($context['collection_operation_name']))
+        
             $this->entityManager->persist($data);
         $this->entityManager->flush();
-      // call your persistence layer to save $data
       return $data;
     }
 

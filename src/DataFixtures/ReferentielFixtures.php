@@ -14,12 +14,12 @@ class ReferentielFixtures extends Fixture
         for ($i=1;$i<=3;$i++)
         {
             $Referentiel = new Referentiel();
-            $Referentiel -> setLibelle('Referentiel '.$i);
+            $Referentiel -> setLibelle('Referentiel '.($i+10));
             $Referentiel -> setPresentation('presentation '.$i);
             $Referentiel -> setProgramme('programme '.$i);
             $Referentiel -> setCritereAdmission('critere Admission '.$i);
             $Referentiel -> setCritereEvaluation('critere Evaluation '.$i);
-            //$Referentiel -> addGroupecompetence($this->getReference('Libelle '.$i));
+            $Referentiel -> addGroupecompetence($this->getReference('Groupecompetence '.$i));
         }
         $manager->persist($Referentiel);
         $manager->flush();

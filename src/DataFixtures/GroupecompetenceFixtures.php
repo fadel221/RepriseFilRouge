@@ -18,14 +18,14 @@ class GroupecompetenceFixtures extends Fixture
         for($i=1;$i<=3; $i++)
         {
             $Groupecompetence=new Groupecompetence();
-            $Groupecompetence->setLibelle("Groupecompetence ".$i);
+            $Groupecompetence->setLibelle("Groupecompetence ".($i+10));
             $Groupecompetence->setDescriptif("Descriptif ".$i);
             $Groupecompetence->setType("Type ".$i);
             $Groupecompetence->setNom("Nom ".$i);
-           // $this->addReference("Groupecompetence ".$i, $Groupecompetence);
+            $this->addReference("Groupecompetence ".$i, $Groupecompetence);
+            $Groupecompetence->setUser($this->getReference('USER1'));
             $manager->persist($Groupecompetence);
             $manager->flush();
-            
         }
     }
 
