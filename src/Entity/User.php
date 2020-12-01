@@ -112,28 +112,28 @@ class User  implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read"})
+     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read","promo_read"})
      * @Assert\Email()
      */
     private $email;
 
     /**
      * @ORM\Column(type="boolean",nullable=true)
-     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read"})
+     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read","promo_read"})
      * 
      */
     private $isDeleted;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read"})
+     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read","promo_read"})
      * @Assert\NotBlank()
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read"})
+     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read","promo_read"})
      * @Assert\NotBlank()
      */
     private $nom;

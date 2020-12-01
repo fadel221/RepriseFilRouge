@@ -89,10 +89,16 @@ class Formateur extends User
      */
     private $groupes;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Promo::class, mappedBy="formateurs")
+     */
+    private $promos;
+
     public function __construct()
     {
         parent::__construct();
         $this->groupes = new ArrayCollection();
+        $this->promos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -122,6 +128,33 @@ class Formateur extends User
     {
         if ($this->groupes->removeElement($groupe)) {
             $groupe->removeFormateur($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Promo[]
+     */
+    public function getPromos(): Collection
+    {
+        return $this->promos;
+    }
+
+    public function addPromo(Promo $promo): self
+    {
+        if (!$this->promos->contains($promo)) {
+            $this->promos[] = $promo;
+            $promo->addFormateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removePromo(Promo $promo): self
+    {
+        if ($this->promos->removeElement($promo)) {
+            $promo->removeFormateur($this);
         }
 
         return $this;

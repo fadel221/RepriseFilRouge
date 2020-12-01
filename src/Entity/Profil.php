@@ -21,7 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * attributes=
  * {
  *   "pagination_items_per_page"=10,
- *    "normalization_context"={"groups"={"profil_read"},"enable_max_depth"=true}
+ *   "normalization_context"={"groups"={"profil_read"},"enable_max_depth"=true}
  *  },
  *     collectionOperations={
  *         "post"={

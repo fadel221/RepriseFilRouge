@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\PromoRepository;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -14,8 +15,48 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * 
  * attributes={
  *          "pagination_items_per_page"=10,
- *          "normalization_context"={"groups"={"groupe_read"},"enable_max_depth"=true}
+ *          "normalization_context"={"groups"={"promo_read"},"enable_max_depth"=true},
+ *          "denormalization_context"={"groups"={"promo_write"},"enable_max_depth"=true}
  *      },
+ * 
+ *  collectionOperations={
+ *         "post"={
+ *              "security_post_denormalize"="is_granted('ROLE_ADMIN')", 
+ *              "security_post_denormalize_message"="Vous n'avez pas ce privilege.",
+ *              "path"="admin/promos",
+ *              "denormalization_context"={"groups"={"promo_write"}}
+ *          },
+ *         "get"={
+ *              "security"="is_granted('ROLE_ADMIN')", 
+ *              "security_message"="Vous n'avez pas acces a cette ressource.",
+ *              "path"="admin/promos",
+ *              },
+ *              
+ *     },
+ *     
+ *     itemOperations={
+ *         "get"={
+ *              "security"="is_granted('ROLE_ADMIN')", 
+ *              "security_message"="Vous n'avez pas ce privilege.",
+ *              "path"="admin/promos/{id}",
+ *         }, 
+ *          
+ *         "delete"={
+ *              "security"="is_granted('ROLE_ADMIN')",
+ *              "security_message"="Vous n'avez pas ce privilege.",
+ *              "path"="admin/promos/{id}",
+ *         },
+ *         "patch"={
+ *              "security"="is_granted('ROLE_ADMIN')", 
+ *              "security_message"="Vous n'avez pas ce privilege.",
+ *              "path"="admin/promos/{id}",
+ *         },
+ *         "put"={
+ *              "security_post_denormalize"="is_granted('ROLE_ADMIN')", 
+ *              "security_post_denormalize_message"="Vous n'avez pas ce privilege.",
+ *              "path"="admin/promos/{id}",
+ *         },
+ *     },
  * )
  * @ORM\Entity(repositoryClass=PromoRepository::class)
  */
@@ -25,29 +66,88 @@ class Promo
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"groupe_read","groupe_write"})
+     * @Groups({"promo_read"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Referentiel::class, inversedBy="promo")
+     * @Groups({"promo_read","promo_write"})
      */
     private $referentiel;
 
     /**
-     * @ORM\OneToMany(targetEntity=Groupe::class, mappedBy="promo", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=PromoBrief::class, mappedBy="promo")
+     * @Groups({"promo_read"})
+     */
+    private $promoBriefs;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Groupe::class, mappedBy="promo")
+     * @Groups({"promo_read","promo_write"})
      */
     private $groupe;
 
     /**
-     * @ORM\OneToMany(targetEntity=PromoBrief::class, mappedBy="promo")
+     * @ORM\ManyToMany(targetEntity=Formateur::class, inversedBy="promos")
+     * @Groups({"promo_read","promo_write"})
      */
-    private $promoBriefs;
+    private $formateurs;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"promo_read","promo_write"})
+     */
+    private $titre;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"promo_read","promo_write"})
+     */
+    private $langue;
+
+    /**
+     * @ORM\Column(type="text")
+     * @Groups({"promo_read","promo_write"})
+     */
+    private $description;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"promo_read","promo_write"})
+     */
+    private $lieu;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"promo_read","promo_write"})
+     */
+    private $referenceAgate;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"promo_read","promo_write"})
+     */
+    private $fabrique;
+
+    /**
+     * @ORM\Column(type="date")
+     * @Groups({"promo_read","promo_write"})
+     */
+    private $dateDébut;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     * @Groups({"promo_read","promo_write"})
+     */
+    private $dateFin;
 
     public function __construct()
     {
         $this->groupe = new ArrayCollection();
         $this->promoBriefs = new ArrayCollection();
+        $this->formateurs = new ArrayCollection();
+        $this->setDateDébut(new DateTime());
     }
 
     public function getId(): ?int
@@ -123,6 +223,126 @@ class Promo
                 $promoBrief->setPromo(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Formateur[]
+     */
+    public function getFormateurs(): Collection
+    {
+        return $this->formateurs;
+    }
+
+    public function addFormateur(Formateur $formateur): self
+    {
+        if (!$this->formateurs->contains($formateur)) {
+            $this->formateurs[] = $formateur;
+        }
+
+        return $this;
+    }
+
+    public function removeFormateur(Formateur $formateur): self
+    {
+        $this->formateurs->removeElement($formateur);
+
+        return $this;
+    }
+
+    public function getTitre(): ?string
+    {
+        return $this->titre;
+    }
+
+    public function setTitre(string $titre): self
+    {
+        $this->titre = $titre;
+
+        return $this;
+    }
+
+    public function getLangue(): ?string
+    {
+        return $this->langue;
+    }
+
+    public function setLangue(string $langue): self
+    {
+        $this->langue = $langue;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getLieu(): ?string
+    {
+        return $this->lieu;
+    }
+
+    public function setLieu(?string $lieu): self
+    {
+        $this->lieu = $lieu;
+
+        return $this;
+    }
+
+    public function getReferenceAgate(): ?string
+    {
+        return $this->referenceAgate;
+    }
+
+    public function setReferenceAgate(?string $referenceAgate): self
+    {
+        $this->referenceAgate = $referenceAgate;
+
+        return $this;
+    }
+
+    public function getFabrique(): ?string
+    {
+        return $this->fabrique;
+    }
+
+    public function setFabrique(string $fabrique): self
+    {
+        $this->fabrique = $fabrique;
+
+        return $this;
+    }
+
+    public function getDateDébut(): ?\DateTimeInterface
+    {
+        return $this->dateDébut;
+    }
+
+    public function setDateDébut(\DateTimeInterface $dateDébut): self
+    {
+        $this->dateDébut = $dateDébut;
+
+        return $this;
+    }
+
+    public function getDateFin(): ?\DateTimeInterface
+    {
+        return $this->dateFin;
+    }
+
+    public function setDateFin(?\DateTimeInterface $dateFin): self
+    {
+        $this->dateFin = $dateFin;
 
         return $this;
     }

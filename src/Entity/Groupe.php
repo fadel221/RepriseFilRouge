@@ -40,15 +40,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "normalization_context"={"groups"={"groupe_read"}},
  *              "path"="admin/groupes/{id}",
  *              "requirements"={"id"="\d+"},
- *              "defaults"={"id"=null}
  *          },
- * 
- *           
  *         "delete"={
  *              "security"="is_granted('ROLE_ADMIN')",
  *              "security_message"="Vous n'avez pas ces privileges.",
- *              "path"="admin/groupes/{id}",
- *              "requirements"={"id"="\d+"},
+ *              "path"="admin/groupes/{idg}/apprenants/{ida}",
  *          },
  *         "patch"={
  *              "security"="is_granted('ROLE_ADMIN')", 
@@ -85,19 +81,19 @@ class Groupe
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"groupe_write","groupe_read"})
+     * @Groups({"groupe_write","groupe_read","promo_read"})
      */
     private $type;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"groupe_read"})
+     * @Groups({"groupe_read","promo_read"})
      */
     private $isClotured;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"groupe_read"})
+     * @Groups({"groupe_read","promo_read"})
      */
     private $dateCreation;
 
@@ -110,7 +106,7 @@ class Groupe
 
     /**
      * @ORM\ManyToMany(targetEntity=Apprenant::class, inversedBy="groupes")
-     * @Groups({"groupe_read","groupe_write"})
+     * @Groups({"groupe_read","groupe_write","promo_read"})
      */
     private $apprenant;
 
