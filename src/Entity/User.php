@@ -138,7 +138,6 @@ class User  implements UserInterface
      */
     private $nom;
 
-    
 
     /**
      * @ORM\ManyToOne(targetEntity=Profil::class, inversedBy="users")

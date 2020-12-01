@@ -25,7 +25,7 @@ class Promo
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"groupe_read"})
+     * @Groups({"groupe_read","groupe_write"})
      */
     private $id;
 

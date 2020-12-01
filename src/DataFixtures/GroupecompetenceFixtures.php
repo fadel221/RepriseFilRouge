@@ -23,7 +23,7 @@ class GroupecompetenceFixtures extends Fixture
             $Groupecompetence->setType("Type ".$i);
             $Groupecompetence->setNom("Nom ".$i);
             $this->addReference("Groupecompetence ".$i, $Groupecompetence);
-            $Groupecompetence->setUser($this->getReference('USER1'));
+            //$Groupecompetence->setUser($this->getReference('USER1'));
             $manager->persist($Groupecompetence);
             $manager->flush();
         }

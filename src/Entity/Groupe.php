@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\GroupeRepository;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -13,31 +14,22 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(
  * attributes={
  *          "pagination_items_per_page"=10,
- *          "normalization_context"={"groups"={"groupe_read"},"enable_max_depth"=true}
+ *          "normalization_context"={"groups"={"groupe_read"},"enable_max_depth"=true},
+ *          "denormalization_context"={"groups"={"groupe_write"}}
  *      },
- * 
  *      collectionOperations={
  *          "post"={
  *              "path"="/admin/groupes",
  *              "security"="is_granted('ROLE_ADMIN')",
  *              "security_message"="Vous n'avez pas le privilege",
- *              "denormalization_context"={"groups"={"groupe_read"}}
+ *              "denormalization_context"={"groups"={"groupe_write"}}
  *          },
  *         "get"={
  *              "security"="is_granted('ROLE_ADMIN')", 
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
  *              "path"="admin/groupes",
  *              "normalization_context"={"groups"={"groupe_read"}}
- *          },
- *          "post"=
- *          {
- *              "security"="is_granted('ROLE_ADMIN')",
- *              "method"="POST", 
- *              "security_message"="Vous n'avez pas ces privileges.",
- *              "normalization_context"={"groups"={"groupe_read"}},
- *              "path"="admin/groupes",  
- *          },
- * 
+ *          }
  *          
  *     },
  *     
@@ -47,14 +39,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "security_message"="Vous n'avez pas ces privileges.",
  *              "normalization_context"={"groups"={"groupe_read"}},
  *              "path"="admin/groupes/{id}",
- *              "requirements"={"id"="\d+"},
- *              "defaults"={"id"=null}
- *          },
- *           "get"={
- *              "security"="is_granted('ROLE_CM')", 
- *              "security_message"="Vous n'avez pas ces privileges.",
- *              "normalization_context"={"groups"={"groupe_read"}},
- *              "path"="groupes/{id}",
  *              "requirements"={"id"="\d+"},
  *              "defaults"={"id"=null}
  *          },
@@ -101,7 +85,7 @@ class Groupe
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"groupe_read"})
+     * @Groups({"groupe_write","groupe_read"})
      */
     private $type;
 
@@ -118,28 +102,32 @@ class Groupe
     private $dateCreation;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Promo::class, inversedBy="groupe")
+     * @ORM\ManyToOne(targetEntity=Promo::class, inversedBy="groupe",cascade={"persist"}))
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"groupe_read"})
+     * @Groups({"groupe_read","groupe_write"})
      */
     private $promo;
 
     /**
      * @ORM\ManyToMany(targetEntity=Apprenant::class, inversedBy="groupes")
-     * @Groups({"groupe_read"})
+     * @Groups({"groupe_read","groupe_write"})
      */
     private $apprenant;
 
     /**
      * @ORM\ManyToMany(targetEntity=Formateur::class, inversedBy="groupes")
-     * @Groups({"groupe_read"})
+     * @Groups({"groupe_read","groupe_write"})
      */
     private $formateur;
+
+    
 
     public function __construct()
     {
         $this->apprenant = new ArrayCollection();
         $this->formateur = new ArrayCollection();
+        $this->setisClotured(false);
+        $this->setDateCreation(new DateTime());
     }
 
     public function getId(): ?int
@@ -205,15 +193,18 @@ class Groupe
         if (!$this->apprenant->contains($apprenant)) {
             $this->apprenant[] = $apprenant;
         }
-
         return $this;
     }
 
     public function removeApprenant(Apprenant $apprenant): self
     {
         $this->apprenant->removeElement($apprenant);
-
         return $this;
+    }
+    // Setter pour apprenant
+    public function setApprenant ($apprenant)
+    {
+        $this->apprenant=$apprenant;
     }
 
     /**
@@ -226,17 +217,17 @@ class Groupe
 
     public function addFormateur(Formateur $formateur): self
     {
-        if (!$this->formateur->contains($formateur)) {
+        if (!$this->formateur->contains($formateur)) 
+        {
             $this->formateur[] = $formateur;
         }
-
         return $this;
     }
 
     public function removeFormateur(Formateur $formateur): self
     {
         $this->formateur->removeElement($formateur);
-
         return $this;
     }
+    
 }

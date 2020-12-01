@@ -149,7 +149,6 @@ class GroupeTagsController extends AbstractController
             $errors = $serializer->serialize($errors,"json");
             return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
         }
-        
         $manager->persist($GroupeTags);
         $manager->flush();
     }
