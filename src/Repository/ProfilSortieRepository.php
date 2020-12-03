@@ -47,4 +47,18 @@ class ProfilSortieRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findOneByPromoAndProfilsortie(int $profilsortie, int $promo)
+            {
+                $queryBuilder = $this->createQueryBuilder(’p’)
+                ->where(’p.id = :profilsortie’)
+                ->setParameter(’profilsortie’, $profilsortie)
+                ->andWhere(’p.prenom = :prenom’)
+                ->setParameter(’prenom’, $prenom);
+                $query = $queryBuilder->getQuery();
+                $result = $query->setMaxResults(1)->
+                getOneOrNullResult();
+                return $result;
+            $result = $query->setMaxResults(1)->getOneOrNullResult();
+            return $result;     
 }

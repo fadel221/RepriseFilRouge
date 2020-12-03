@@ -44,7 +44,6 @@ class CompetenceDataPersister implements ContextAwareDataPersisterInterface
         {
             //Archivage du Niveau de la competence
             $niveau->setisDeleted(true);
-            $this->entityManager->persist($niveau);
             $this->entityManager->flush();
         }
         $this->entityManager->persist($data);//Et on renvoie à la BD

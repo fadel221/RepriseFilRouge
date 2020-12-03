@@ -12,9 +12,10 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass=ProfilRepository::class)
  * @ApiResource(
@@ -62,6 +63,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  * )
  *  @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
+ * @UniqueEntity(
+ *      fields={"libelle"},
+ *      message="Ce libellé existe déjà"
+ *)
  */
 class Profil extends ProfilDataPersister
 {

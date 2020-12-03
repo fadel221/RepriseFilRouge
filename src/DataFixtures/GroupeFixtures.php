@@ -3,11 +3,13 @@
 namespace App\DataFixtures;
 
 use App\Entity\Groupe;
+use App\DataFixtures\PromoFixtures;
 use App\Repository\PromoRepository;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class GroupeFixtures extends Fixture
+class GroupeFixtures extends Fixture implements DependentFixtureInterface
 {
     private $Promorep;
 
@@ -26,10 +28,17 @@ class GroupeFixtures extends Fixture
             {
                 $Groupe->setType("Principal");
             }
-            $Groupe->setPromo($this->Promorep->find(3));
+            $Groupe->setPromo($this->getReference("Promo".$i));
             $manager->persist($Groupe);
         }
 
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return array(
+            PromoFixtures::class,
+        );
     }
 }

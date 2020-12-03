@@ -114,6 +114,7 @@ class User  implements UserInterface
      * @ORM\Column(type="string", length=255)
      * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read","promo_read"})
      * @Assert\Email()
+     * @Assert\Unique
      */
     private $email;
 
@@ -157,7 +158,7 @@ class User  implements UserInterface
     private $lastUpdate;
 
     /**
-     * @ORM\OneToMany(targetEntity=Groupecompetence::class, mappedBy="user")
+     * @ORM\OneToMany(targetEntity=Groupecompetence::class, mappedBy="user",cascade={"persist"})
      */
     private $groupecompetences;
 

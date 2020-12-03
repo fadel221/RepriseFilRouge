@@ -3,11 +3,13 @@
 namespace App\DataFixtures;
 
 use App\Entity\Niveau;
-use App\Repository\CompetenceRepository;
 use Doctrine\Persistence\ObjectManager;
+use App\DataFixtures\CompetenceFixtures;
+use App\Repository\CompetenceRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class NiveauFixtures extends Fixture
+class NiveauFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
@@ -18,9 +20,17 @@ class NiveauFixtures extends Fixture
             $niveau->setCritereEvaluation("CritereEvaluation ".$i);
             $niveau->setCriterePerformance("CriterPerformance" .$i);
             $niveau->setGroupeAction("GroupeAction ".$i);
+            $niveau->setCompetence($this->getReference("Competence1"));
             $manager->persist($niveau);
             $manager->flush();
         }
         
+    }
+
+    public function getDependencies()
+    {
+        return array(
+            CompetenceFixtures::class,
+        );
     }
 }

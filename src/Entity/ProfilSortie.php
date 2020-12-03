@@ -4,14 +4,17 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiFilter;
+use App\DataPersister\EntityDataPersister;
 use App\Repository\ProfilSortieRepository;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-use App\DataPersister\EntityDataPersister;
+use Symfony\Component\Validator\Constraints\Unique;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 /**
  * @ApiResource(
  * attributes={
@@ -29,7 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "security"="is_granted('ROLE_ADMIN')", 
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
  *              "path"="admin/profilsorties",
- *              "defaults"={"id"=null}
+ *             
  *          },
  *     },
  *     
@@ -72,8 +75,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @ORM\Entity(repositoryClass=ProfilSortieRepository::class)
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
+ * @UniqueEntity(
+ *      fields={"libelle"},
+ *      message="Ce libellé existe déjà"
+ *)
  */
-class ProfilSortie extends EntityDataPersister
+class ProfilSortie 
 {
     /**
      * @ORM\Id

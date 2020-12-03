@@ -87,7 +87,7 @@ class Promo
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Referentiel::class, inversedBy="promo")
+     * @ORM\ManyToOne(targetEntity=Referentiel::class, inversedBy="promo",cascade={"persist"})
      * @Groups({"promo_read","promo_write","promo_id_ref"})
      */
     private $referentiel;

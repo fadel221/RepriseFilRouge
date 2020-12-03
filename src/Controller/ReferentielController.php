@@ -57,17 +57,7 @@ class ReferentielController extends AbstractController
         return $this->json($Referentiel,Response::HTTP_CREATED);
     }
 
-     /**
-     * @Route(
-     *     path="/api/admin/referentiels/{id}",
-     *     methods={"PUT","PATCH"},
-     *     defaults={
-     *          "__controller"="App\Controller\ReferentielController::updateReferentiel",
-     *          "__api_resource_class"=Referentiel::class,
-     *          "__api_collection_operation_name"="update_referentiel"
-     *     }
-     * )
-    */
+     
     public function updateReferentiel(Request $request,SerializerInterface $serializer,ValidatorInterface $validator,EntityManagerInterface $manager, $id, GroupecompetenceRepository $cmp, ReferentielRepository $grpcmp)
     {
         $Referentiel_json = $request -> getContent();
@@ -161,12 +151,13 @@ class ReferentielController extends AbstractController
      *     defaults={
      *          "__controller"="App\Controller\ReferentielController::showReferentielwithGroupecompetence",
      *          "__api_resource_class"=Referentiel::class,
-     *          "__api_collection_operation_name"="show_referentiel_groupecompetence_competence"
+     *          "__api_collection_operation_name"="referentiel_groupecompetence_competence"
      *     }
      * )
     */
     public function ShowReferentielwithGroupecompetence(ReferentielRepository $repref,GroupecompetenceRepository $grpref,$idr,$idg)
     {
+
         if ($Referentiel=$repref->find($idr))
         {
             if ($Groupecompetence=$grpref->find($idg))
@@ -175,7 +166,7 @@ class ReferentielController extends AbstractController
                 {
                     if ($ref==$Referentiel)
                     { 
-                        return $this -> json($Groupecompetence, Response::HTTP_OK,);
+                        return $this -> json($Referentiel, Response::HTTP_OK,);
                     }
                 }
             }

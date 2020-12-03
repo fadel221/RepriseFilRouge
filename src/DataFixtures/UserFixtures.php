@@ -11,9 +11,10 @@ use App\Entity\Formateur;
 use App\DataFixtures\ProfilFixtures;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture implements DependentFixtureInterface
 {
     private $encoder;
 
@@ -38,7 +39,7 @@ class UserFixtures extends Fixture
                 $users->setUsername(strtolower($faker->name()));
                 $password = $this->encoder->encodePassword($users, "passe");
                 $users->setPassword($password);
-               // $this->addReference('USER'.($i+1),$users);
+                $this->addReference('USER'.($i+1),$users);
                 $users->setProfil($this->getReference(($ref[$i])));
                 $manager->persist($users);
                 $manager->flush();

@@ -4,12 +4,18 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ReferentielRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use App\DataPersister\EntityDataPersister;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
-use App\DataPersister\EntityDataPersister;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Unique;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 
 /**
  * @ApiResource(
@@ -50,13 +56,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
  *              "path"="admin/referentiels/groupecompetences",
  *              },
- *            "show_referentiel_groupecompetence_competence"=
+ * 
+ *              "referentiel_groupecompetence_competence"=
  *              {
  *              "method"="GET",
  *              "security"="is_granted('ROLE_CM')", 
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
  *              "path"="admin/referentiels/{idr}/groupecompetences/{idg}",
+ *              "requirements"={"id"="\d+"}
  *              }
+ * 
+ *              
  *     },
  *     itemOperations={
  *         "get"={
@@ -69,6 +79,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "security_message"="Vous n'avez pas ces privileges.",
  *              "path"="admin/referentiels/{id}",
  *          },
+ * 
+ *           "put"={
+ *              "security"="is_granted('ROLE_ADMIN')", 
+ *              "security_message"="Vous n'avez pas ces privileges.",
+ *              "path"="admin/referentiels/{id}",
+ *              "denormalization_context"={"groups"={"referentiel:write"}}
+ *          },    
  *         "update_referentiel"={
  *              "method"="PATCH",
  *              "security"="is_granted('ROLE_ADMIN')", 
@@ -81,9 +98,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "security_message"="Vous n'avez pas ces privileges.",
  *              "path"="admin/referentiels/{id}",
  *          },
+ * 
+ *          
  *     },
  * )
  * @ORM\Entity(repositoryClass=ReferentielRepository::class)
+ * @UniqueEntity(
+ *      fields={"libelle"},
+ *      message="Ce libellé existe déjà"
+ *)
+ *@ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  */
 class Referentiel 
 {
@@ -98,6 +122,7 @@ class Referentiel
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read","promo_id_ref"})
+     * @Assert\NotBlank()
      */
     private $libelle;
     /**
@@ -141,11 +166,17 @@ class Referentiel
      */
     private $promo;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isDeleted;
+
     public function __construct()
     {
         $this->groupecompetences = new ArrayCollection();
         $this->briefs = new ArrayCollection();
         $this->promo = new ArrayCollection();
+        $this->setIsDeleted(false);
     }
 
     public function getId(): ?int
@@ -293,6 +324,18 @@ class Referentiel
                 $promo->setReferentiel(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIsDeleted(): ?bool
+    {
+        return $this->isDeleted;
+    }
+
+    public function setIsDeleted(bool $isDeleted): self
+    {
+        $this->isDeleted = $isDeleted;
 
         return $this;
     }

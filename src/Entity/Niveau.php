@@ -5,15 +5,22 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\NiveauRepository;
 use ApiPlatform\Core\Annotation\ApiFilter;
+use App\DataPersister\EntityDataPersister;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-use App\DataPersister\EntityDataPersister;
+use Symfony\Component\Validator\Constraints\Unique;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 /**
  * @ApiResource()
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  * @ORM\Entity(repositoryClass=NiveauRepository::class)
+ * @UniqueEntity(
+ *      fields={"libelle"},
+ *      message="Ce libellé existe déjà"
+ *)
  */
 class Niveau 
 {

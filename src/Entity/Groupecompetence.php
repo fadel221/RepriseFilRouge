@@ -5,15 +5,17 @@ namespace App\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiFilter;
+use App\DataPersister\EntityDataPersister;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\GroupecompetenceRepository;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Unique;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-use App\DataPersister\EntityDataPersister;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ApiResource(
@@ -74,6 +76,10 @@ use App\DataPersister\EntityDataPersister;
  * )
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  * @ORM\Entity(repositoryClass=GroupecompetenceRepository::class)
+ * @UniqueEntity(
+ *      fields={"libelle"},
+ *      message="Ce libellé existe déjà"
+ *)
  */
 class Groupecompetence
 {
@@ -81,59 +87,59 @@ class Groupecompetence
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups ({"competence_write","referentiel:write"})
+     * @Groups ({"referentiel:write","referentiel_read","competence_read","competence_write"})
      */
     private $id;
 
     /**
      * @ORM\ManyToMany(targetEntity=Competence::class, mappedBy="groupecompetence",cascade={"persist"})
-     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","promo_id_ref"})
+     * @Groups({"referentiel_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","promo_id_ref"})
      * @ApiSubresource()
      */
     private $competences;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"Grpcompetence_read","update_Grpcompetence_read","referentiel_read"})
+     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","update_Grpcompetence_read","referentiel_read"})
      */
     private $isDeleted;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref"})
+     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref"})
      */
     private $type;
 
     /**
      * @ORM\Column(type="string", length=255)
      *  @Assert\NotBlank()
-     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref"})
+     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref"})
      */
     private $nom;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref"})
+     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref"})
      */
     private $dateCreation;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","promo_id_ref"})
+     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","Grpcompetence_competence_read","promo_id_ref"})
      * @Assert\NotBlank()
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref"})
+     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref"})
      * @Assert\NotBlank()
      */
     private $descriptif;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="groupecompetences")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="groupecompetences",cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      */
     private $user;

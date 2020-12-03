@@ -5,13 +5,15 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CompetenceRepository;
 use ApiPlatform\Core\Annotation\ApiFilter;
+use App\DataPersister\EntityDataPersister;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-use App\DataPersister\EntityDataPersister;
+use Symfony\Component\Validator\Constraints\Unique;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ApiResource(
  * attributes={
@@ -62,6 +64,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @ORM\Entity(repositoryClass=CompetenceRepository::class)
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
+ * @UniqueEntity(
+ *      fields={"libelle"},
+ *      message="Ce libellé existe déjà"
+ * )
  */
 class Competence 
 {
@@ -69,6 +75,7 @@ class Competence
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"Grpcompetence_read"})
      */
     private $id;
 
@@ -98,7 +105,7 @@ class Competence
     private $niveau;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Groupecompetence::class, inversedBy="competences")
+     * @ORM\ManyToMany(targetEntity=Groupecompetence::class, inversedBy="competences",cascade={"persist"})
      * @Groups({"competence_read","competence_write"})
      */
     private $groupecompetence;

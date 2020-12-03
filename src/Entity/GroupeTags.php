@@ -11,8 +11,10 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Unique;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ApiResource(
  * 
@@ -72,6 +74,10 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  * )
  * @ORM\Entity(repositoryClass=GroupeTagsRepository::class)
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
+ * @UniqueEntity(
+ *      fields={"libelle"},
+ *      message="Ce libellé existe déjà"
+ *)
  */
 class GroupeTags //extends EntityDataPersister
 {
@@ -87,6 +93,7 @@ class GroupeTags //extends EntityDataPersister
      * @ORM\Column(type="string", length=255, unique=true)
      * @Groups({"Grptags_read","Grptags_tags_read"})
      * @Assert\NotBlank()
+     * @Assert\Unique
      */
     private $libelle;
 

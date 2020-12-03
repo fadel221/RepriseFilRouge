@@ -5,8 +5,9 @@ namespace App\DataFixtures;
 use App\Entity\Tags;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class TagsFixtures extends Fixture
+class TagsFixtures extends Fixture 
 {
     public function load(ObjectManager $manager)
     {

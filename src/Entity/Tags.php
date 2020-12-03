@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ApiResource(
  * attributes={
@@ -69,6 +70,10 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  * )
  * @ORM\Entity(repositoryClass=TagsRepository::class)
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
+ * @UniqueEntity(
+ *      fields={"libelle"},
+ *      message="Ce libellé existe déjà"
+ *)
  */
 class Tags //extends EntityDataPersister
 {
@@ -84,6 +89,7 @@ class Tags //extends EntityDataPersister
      * @ORM\Column(type="string", length=255)
      * @Groups({"tags_read","Grptags_tags_read"})
      * @Assert\NotBlank()
+     * @Assert\Unique
      */
     private $descriptif;
 
