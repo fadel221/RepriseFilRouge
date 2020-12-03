@@ -87,7 +87,7 @@ class Groupecompetence
 
     /**
      * @ORM\ManyToMany(targetEntity=Competence::class, mappedBy="groupecompetence",cascade={"persist"})
-     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read"})
+     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","promo_id_ref"})
      * @ApiSubresource()
      */
     private $competences;
@@ -101,33 +101,33 @@ class Groupecompetence
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read"})
+     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref"})
      */
     private $type;
 
     /**
      * @ORM\Column(type="string", length=255)
      *  @Assert\NotBlank()
-     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read"})
+     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref"})
      */
     private $nom;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read"})
+     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref"})
      */
     private $dateCreation;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read"})
+     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","promo_id_ref"})
      * @Assert\NotBlank()
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read"})
+     * @Groups({"Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref"})
      * @Assert\NotBlank()
      */
     private $descriptif;

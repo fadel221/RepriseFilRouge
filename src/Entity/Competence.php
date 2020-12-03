@@ -52,8 +52,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "path"="admin/competences/{id}",
  *              "denormalization_context"={"groups"={"competence_write"}}
  *         },
- *         "update_competence"={
- *              "method"="PUT",
+ *         "put"={
  *              "security"="is_granted('ROLE_ADMIN')",
  *              "security_post_denormalize_message"="Vous n'avez pas ce privilege.",
  *              "path"="admin/competences/{id}",
@@ -75,20 +74,26 @@ class Competence
 
     /**
      * @ORM\Column(type="string",length=255)
-     * @Groups({"competence_write","competence_read","Grpcompetence_read","Grpcompetence_competence_read"})
+     * @Groups({"competence_write","competence_read","Grpcompetence_read","Grpcompetence_competence_read","promo_id_ref"})
      * @Assert\NotBlank()
      */
     private $libelle;
 
     /*
      *@ORM\Column(type="boolean")
-     *@Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read"})
+     *@Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","promo_id_ref"})
      */
     private $isDeleted;
 
     /**
      * @ORM\OneToMany(targetEntity=Niveau::class, mappedBy="competence",cascade={"persist"})
      * @Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","competence_write"})
+     * @Assert\Count(
+     *      min = 3,
+     *      max = 3,
+     *      minMessage = "You must give three levels",
+     *      maxMessage = "You must give three levels"
+     * )
      */
     private $niveau;
 

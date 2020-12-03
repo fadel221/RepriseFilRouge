@@ -65,6 +65,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "security_post_denormalize"="is_granted('ROLE_ADMIN')", 
  *              "security_post_denormalize_message"="Vous n'avez pas ce privilege.",
  *              "path"="admin/groupetags/{id}",
+ *              "normalization_context"={"groups"={"Grptags_tags_read"},"enable_max_depth"=true}
+
  *         },
  *     },
  * )
@@ -77,6 +79,7 @@ class GroupeTags //extends EntityDataPersister
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"Grptags_read","Grptags_tags_read"})
      */
     private $id;
 
@@ -97,6 +100,7 @@ class GroupeTags //extends EntityDataPersister
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"Grptags_read","Grptags_tags_read"})
      */
     private $isDeleted;
 

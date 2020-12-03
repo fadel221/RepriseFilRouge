@@ -97,37 +97,37 @@ class Referentiel
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read"})
+     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read","promo_id_ref"})
      */
     private $libelle;
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read"})
+     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read","promo_id_ref"})
      */
     private $presentation;
 
     /**
      * @ORM\Column(type="string",length=255)
-     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read"})
+     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read","promo_id_ref"})
      */
     private $programme;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read"})
+     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read","promo_id_ref"})
      */
     private $critereAdmission;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read"})
+     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read","promo_id_ref"})
      */
     private $critereEvaluation;
 
     /**
      * @ORM\ManyToMany(targetEntity=Groupecompetence::class, inversedBy="referentiels",cascade={"persist"}))
      * @ApiSubresource()
-     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read"})
+     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read","promo_id_ref"})
      */
     private $groupecompetences;
 

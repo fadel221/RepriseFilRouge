@@ -29,10 +29,7 @@ class CompetenceDataPersister implements ContextAwareDataPersisterInterface
 
     public function persist($data, array $context = [])
     {
-        dd($data);
-        if (isset($context['collection_operation_name']))
-        
-            $this->entityManager->persist($data);
+        $this->entityManager->persist($data);
         $this->entityManager->flush();
       return $data;
     }

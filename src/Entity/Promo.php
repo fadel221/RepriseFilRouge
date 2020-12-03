@@ -31,6 +31,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
  *              "path"="admin/promos",
  *              },
+ * 
  *              
  *     },
  *     
@@ -39,7 +40,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "security"="is_granted('ROLE_ADMIN')", 
  *              "security_message"="Vous n'avez pas ce privilege.",
  *              "path"="admin/promos/{id}",
- *         }, 
+ *         },
+ * 
+ *          "promo_id_ref"={
+ *                  "security"="is_granted('ROLE_ADMIN')", 
+ *                  "security_message"="Vous n'avez pas acces a cette ressource.",
+ *                  "path"="admin/promos/{id}/referentiels",
+ *                  "method"="get",
+ *                  "normalization_context"={"groups"={"promo_id_ref"}}
+ *              }, 
  *          
  *         "delete"={
  *              "security"="is_granted('ROLE_ADMIN')",
@@ -56,6 +65,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "security_post_denormalize_message"="Vous n'avez pas ce privilege.",
  *              "path"="admin/promos/{id}",
  *         },
+ * 
+ *      "update_formateurs_promo"={
+ *              "method"="put",
+ *              "security_post_denormalize"="is_granted('ROLE_ADMIN')", 
+ *              "security_post_denormalize_message"="Vous n'avez pas ce privilege.",
+ *              "path"="admin/promos/{id}/formateurs",
+ * },
  *     },
  * )
  * @ORM\Entity(repositoryClass=PromoRepository::class)
@@ -72,7 +88,7 @@ class Promo
 
     /**
      * @ORM\ManyToOne(targetEntity=Referentiel::class, inversedBy="promo")
-     * @Groups({"promo_read","promo_write"})
+     * @Groups({"promo_read","promo_write","promo_id_ref"})
      */
     private $referentiel;
 

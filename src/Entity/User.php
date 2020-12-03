@@ -311,15 +311,14 @@ class User  implements UserInterface
         return $this;
     }
 
-    public function getLastUpdate(): ?\DateTimeInterface
+    public function getLastupdate(): ?\DateTimeInterface
     {
         return $this->lastUpdate;
     }
 
-    public function setLastUpdate(?\DateTimeInterface $lastUpdate): self
+    public function setLastupdate(?\DateTimeInterface $lastUpdate): self
     {
         $this->lastUpdate = $lastUpdate;
-
         return $this;
     }
 

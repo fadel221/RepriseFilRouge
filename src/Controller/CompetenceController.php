@@ -52,17 +52,7 @@ class CompetenceController extends AbstractController
 
 
 
-    /**
-     * @Route(
-     *     path="/api/admin/competences/{id}",
-     *     methods={"PUT","PATCH"},
-     *     defaults={
-     *          "__controller"="App\Controller\CompetenceController::updateCompetence",
-     *          "__api_resource_class"=Competence::class,
-     *          "__api_collection_operation_name"="update_competence"
-     *     }
-     * )
-    */
+
     public function updateCompetence(Request $request,SerializerInterface $serializer,ValidatorInterface $validator,EntityManagerInterface $manager, $id, CompetenceRepository $rep_cmp,NiveauRepository $rep_niveau,GroupecompetenceRepository $grpcmp)
     {
         $Competence_json = $request->getContent();
