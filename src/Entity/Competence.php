@@ -75,20 +75,20 @@ class Competence
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"Grpcompetence_read"})
+     * @Groups({"Grpcompetence_read","referentiel_groupecompetence_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string",length=255)
-     * @Groups({"competence_write","competence_read","Grpcompetence_read","Grpcompetence_competence_read","promo_id_ref"})
+     * @Groups({"competence_write","competence_read","Grpcompetence_read","Grpcompetence_competence_read","promo_id_ref","referentiel_groupecompetence_read"})
      * @Assert\NotBlank()
      */
     private $libelle;
 
     /*
      *@ORM\Column(type="boolean")
-     *@Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","promo_id_ref"})
+     *@Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","promo_id_ref","referentiel_groupecompetence_read"})
      */
     private $isDeleted;
 

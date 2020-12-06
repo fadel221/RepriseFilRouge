@@ -29,6 +29,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
  *              "path"="admin/groupes",
  *              "normalization_context"={"groups"={"groupe_read"}}
+ *          },
+ * 
+ *         "groupes_apprenants"={
+ *           "method"="GET",
+ *           "security"="is_granted('ROLE_ADMIN')", 
+ *              "security_message"="Vous n'avez pas acces a cette ressource.",
+ *              "path"="admin/groupes/apprenants",
+ *              "normalization_context"={"groups"={"groupe_apprenant_read"}}
  *          }
  *          
  *     },
@@ -57,15 +65,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "security_message"="Vous n'avez pas ces privileges.",
  *              "path"="admin/groupes/{id}",
  *              "requirements"={"id"="\d+"},
+ *              "denormalization_context"={"groups"={"groupe_apprenant_write"}}
  *          },
- *          "update_user"=
- *          {
+ * 
+ *          "delete_apprenant"={
  *              "security_post_denormalize"="is_granted('ROLE_FORMATEUR')", 
  *              "security_message"="Vous n'avez pas ces privileges.",
- *              "path"="groupes/{id}",
+ *              "path"="admin/groupes/{idg}/apprenants/{ida}",
  *              "requirements"={"id"="\d+"},
- *              "method"="PUT"
+ *              "method"="DELETE"
+ * 
  *          }
+ *          
  *     },
  * )
  * @ORM\Entity(repositoryClass=GroupeRepository::class)
@@ -76,43 +87,44 @@ class Groupe
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"promo_write","promo_groupes_apprenants_read","promo_apprenant_read","groupe_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"groupe_write","groupe_read","promo_read"})
+     * @Groups({"promo_groupes_apprenants_read","groupe_write","groupe_read","promo_read","promo_apprenant_read","groupe_apprenant_read","groupe_apprenant_write","promo_formateur_read","promo_apprenants_read"})
      */
     private $type;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"groupe_read","promo_read"})
+     * @Groups({"promo_groupes_apprenants_read","groupe_read","promo_read","promo_apprenant_read","groupe_apprenant_read","groupe_apprenant_write","promo_formateur_read","promo_apprenants_read"})
      */
     private $isClotured;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"groupe_read","promo_read"})
+     * @Groups({"promo_groupes_apprenants_read","groupe_read","promo_read","promo_apprenant_read","groupe_apprenant_read","groupe_apprenant_write","promo_formateur_read","promo_apprenants_read"})
      */
     private $dateCreation;
 
     /**
      * @ORM\ManyToOne(targetEntity=Promo::class, inversedBy="groupe",cascade={"persist"}))
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"groupe_read","groupe_write"})
+     * @Groups({"groupe_read","groupe_write","groupe_apprenant_read"})
      */
     private $promo;
 
     /**
      * @ORM\ManyToMany(targetEntity=Apprenant::class, inversedBy="groupes")
-     * @Groups({"groupe_read","groupe_write","promo_read"})
+     * @Groups({"promo_write","promo_groupes_apprenants_read","groupe_read","groupe_write","promo_read","promo_apprenant_read","groupe_apprenant_read","groupe_apprenant_write","promo_apprenants_read"})
      */
     private $apprenant;
 
     /**
      * @ORM\ManyToMany(targetEntity=Formateur::class, inversedBy="groupes")
-     * @Groups({"groupe_read","groupe_write"})
+     * @Groups({"groupe_read","groupe_write","promo_formateur_read"})
      */
     private $formateur;
 

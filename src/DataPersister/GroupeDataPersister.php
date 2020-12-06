@@ -32,7 +32,6 @@ class GroupeDataPersister implements ContextAwareDataPersisterInterface
     
     public function remove($data,array $contex=[])
     {
-        dd($data);
         $data->setisDeleted(true);//Mettre le statut à true pour montrer qu'on l'archive
         $this->entityManager->flush();
     }

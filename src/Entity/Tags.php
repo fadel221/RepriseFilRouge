@@ -171,7 +171,6 @@ class Tags //extends EntityDataPersister
             $this->groupeTags[] = $groupeTag;
             $groupeTag->addTag($this);
         }
-
         return $this;
     }
 

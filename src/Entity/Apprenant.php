@@ -102,7 +102,7 @@ class Apprenant extends User
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"groupe_write"})
+     * @Groups({"promo_write","groupe_write","groupe_apprenant_write"})
      */
     private $id;
 

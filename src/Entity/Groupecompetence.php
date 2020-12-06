@@ -69,7 +69,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *              "security_post_denormalize_message"="Vous n'avez pas ce privilege.",
  *              "path"="admin/groupecompetences/{id}",
  *              "normalization_context"={"groups"={"update_Grpcompetence_read"},"enable_max_depth"=true}
-
  *         },
  *     },
  * 
@@ -87,53 +86,54 @@ class Groupecompetence
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups ({"referentiel:write","referentiel_read","competence_read","competence_write"})
+     * @Groups ({"referentiel:write","referentiel_read","competence_read","competence_write","referentiel_groupecompetence_read"})
      */
     private $id;
 
     /**
      * @ORM\ManyToMany(targetEntity=Competence::class, mappedBy="groupecompetence",cascade={"persist"})
-     * @Groups({"referentiel_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","promo_id_ref"})
+     * @Groups({"referentiel_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","promo_id_ref","referentiel_groupecompetence_read"})
      * @ApiSubresource()
      */
     private $competences;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","update_Grpcompetence_read","referentiel_read"})
+     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","update_Grpcompetence_read","referentiel_read","referentiel_groupecompetence_read"})
      */
     private $isDeleted;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref"})
+     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref","referentiel_groupecompetence_read"})
      */
     private $type;
 
     /**
      * @ORM\Column(type="string", length=255)
      *  @Assert\NotBlank()
-     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref"})
+     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref","referentiel_groupecompetence_read"})
      */
     private $nom;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref"})
+     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref","referentiel_groupecompetence_read"})
      */
     private $dateCreation;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","Grpcompetence_competence_read","promo_id_ref"})
+     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","Grpcompetence_competence_read","promo_id_ref","referentiel_groupecompetence_read"})
      * @Assert\NotBlank()
+     * 
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref"})
+     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref","referentiel_groupecompetence_read"})
      * @Assert\NotBlank()
      */
     private $descriptif;
@@ -298,6 +298,16 @@ class Groupecompetence
         }
 
         return $this;
+    }
+
+    public function RemoveAllCompetences()
+    {
+        $this->competences=null;
+    }
+
+    public function RemoveAllReferentiels()
+    {
+        $this->referentiels=null;
     }
 
 }

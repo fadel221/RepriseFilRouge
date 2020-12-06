@@ -90,6 +90,7 @@ class User  implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"promo_write","promo_apprenants_write","promo_formateurs_write","promo_groupes_apprenants_read","promo_apprenant_read","groupe_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      */
     private $id;
 
@@ -112,7 +113,7 @@ class User  implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read","promo_read"})
+     * @Groups({"promo_groupes_apprenants_read","user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read","promo_read","promo_apprenant_read","groupe_apprenant_read","promo_formateur_read"})
      * @Assert\Email()
      * @Assert\Unique
      */
@@ -120,21 +121,21 @@ class User  implements UserInterface
 
     /**
      * @ORM\Column(type="boolean",nullable=true)
-     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read","promo_read"})
+     * @Groups({"promo_groupes_apprenants_read","user_read","apprenant_read","formateur_read","profilsorties_read","promo_read","promo_apprenant_read","groupe_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      * 
      */
     private $isDeleted;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read","promo_read"})
+     * @Groups({"promo_groupes_apprenants_read","user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read","promo_read","promo_apprenant_read","groupe_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      * @Assert\NotBlank()
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read","promo_read"})
+     * @Groups({"promo_groupes_apprenants_read","user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read","promo_read","promo_apprenant_read","groupe_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      * @Assert\NotBlank()
      */
     private $nom;
@@ -154,6 +155,7 @@ class User  implements UserInterface
 
     /**
      * @ORM\Column(type="date", nullable=true)
+     * @Groups({"promo_groupes_apprenants_read","promo_apprenant_read","groupe_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      */
     private $lastUpdate;
 

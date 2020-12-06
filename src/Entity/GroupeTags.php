@@ -93,7 +93,6 @@ class GroupeTags //extends EntityDataPersister
      * @ORM\Column(type="string", length=255, unique=true)
      * @Groups({"Grptags_read","Grptags_tags_read"})
      * @Assert\NotBlank()
-     * @Assert\Unique
      */
     private $libelle;
 

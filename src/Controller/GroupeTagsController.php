@@ -18,10 +18,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class GroupeTagsController extends AbstractController
-
 {
-    
-
     /**
      * @Route(
      *     path="/api/admin/groupetags",
@@ -43,8 +40,7 @@ class GroupeTagsController extends AbstractController
         {
             //Affectation Tag existant
             if (isset ($value['id']))
-            {
-                
+            {   
                 $GroupeTags->addTag($reptag->find($value['id']));
             }
             // Ajout nouveaux tags
@@ -57,9 +53,6 @@ class GroupeTagsController extends AbstractController
                 $GroupeTags -> addtag($tag);
             }
         }
-
-        
-
         $errors = $validator->validate($GroupeTags);
         if (count($errors)){
             $errors = $serializer->serialize($errors,"json");

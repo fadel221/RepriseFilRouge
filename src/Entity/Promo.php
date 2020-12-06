@@ -2,13 +2,16 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\PromoRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 
 /**
  * @ApiResource(
@@ -32,8 +35,24 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "path"="admin/promos",
  *              },
  * 
- *              
+ *          "get_apprenant_attente"={
+ *              "method"="GET",
+ *              "security"="is_granted('ROLE_ADMIN')", 
+ *              "security_message"="Vous n'avez pas acces a cette ressource.",
+ *              "path"="admin/promos/apprenants/attente",
+ *              "normalization_context"={"groups"={"promo_apprenant_read"},"enable_max_depth"=true}
  *     },
+ * 
+ *      "get_formateurs_promo"={
+ *              "method"="GET",
+ *              "security"="is_granted('ROLE_ADMIN')", 
+ *              "security_message"="Vous n'avez pas acces a cette ressource.",
+ *              "path"="admin/promos/formateurs",
+ *              "normalization_context"={"groups"={"promo_formateur_read"},"enable_max_depth"=true}
+ *     },
+ * 
+ *      
+ * },
  *     
  *     itemOperations={
  *         "get"={
@@ -42,6 +61,40 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "path"="admin/promos/{id}",
  *         },
  * 
+ *          "groupe_apprenants_on_promo"=
+ *          {
+ *                  "security"="is_granted('ROLE_ADMIN')", 
+ *                  "security_message"="Vous n'avez pas acces a cette ressource.",
+ *                  "path"="admin/promos/{idp}/groupes/{idg}/apprenants",
+ *                  "method"="get",
+ *                  "normalization_context"={"groups"={"promo_groupes_apprenants_read"}}
+ *          },
+ * 
+ *          "promo_id_groupe_principale"={
+ *                  "security"="is_granted('ROLE_ADMIN')", 
+ *                  "security_message"="Vous n'avez pas acces a cette ressource.",
+ *                  "path"="/admin/promos/{id}/principal",
+ *                  "method"="get",
+ *                  "normalization_context"={"groups"={"promo_read"}}
+ *              },
+ * 
+ *              "promo_id_apprenants_attente"={
+ *                  "security"="is_granted('ROLE_ADMIN')", 
+ *                  "security_message"="Vous n'avez pas acces a cette ressource.",
+ *                  "path"="admin/promos/{id}/apprenants/attente",
+ *                  "method"="get",
+ *                  "normalization_context"={"groups"={"promo_apprenants_read"}}
+ *              },
+ * 
+ *              "promo_id_formateurs"={
+ *                  "security"="is_granted('ROLE_ADMIN')", 
+ *                  "security_message"="Vous n'avez pas acces a cette ressource.",
+ *                  "path"="admin/promo/{id}/formateurs",
+ *                  "method"="get",
+ *                  "normalization_context"={"groups"={"promo_formateur_read"}}
+ *              },
+ * 
+ *         
  *          "promo_id_ref"={
  *                  "security"="is_granted('ROLE_ADMIN')", 
  *                  "security_message"="Vous n'avez pas acces a cette ressource.",
@@ -54,6 +107,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "security"="is_granted('ROLE_ADMIN')",
  *              "security_message"="Vous n'avez pas ce privilege.",
  *              "path"="admin/promos/{id}",
+ *              "denormalization_context"={"groups"={"promo_write"}}
  *         },
  *         "patch"={
  *              "security"="is_granted('ROLE_ADMIN')", 
@@ -71,10 +125,30 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *              "security_post_denormalize"="is_granted('ROLE_ADMIN')", 
  *              "security_post_denormalize_message"="Vous n'avez pas ce privilege.",
  *              "path"="admin/promos/{id}/formateurs",
+ *              "denormalization_context"={"groups"={"promo_write"}}
+ *              
+ * },
+ * 
+ *    "update_apprenats_promo"={
+ *              "method"="put",
+ *              "security_post_denormalize"="is_granted('ROLE_ADMIN')", 
+ *              "security_post_denormalize_message"="Vous n'avez pas ce privilege.",
+ *              "path"="admin/promos/{id}/apprenants",
+ *              "denormalization_context"={"groups"={"promo_write"}}
+ * },
+ * 
+ *    "update_referentiels_promo"={
+ *              "method"="put",
+ *              "security_post_denormalize"="is_granted('ROLE_ADMIN')", 
+ *              "security_post_denormalize_message"="Vous n'avez pas ce privilege.",
+ *              "path"="admin/promos/{id}/referentiels",
+ *              "denormalization_context"={"groups"={"promo_referentiel_write"}}
  * },
  *     },
  * )
  * @ORM\Entity(repositoryClass=PromoRepository::class)
+ * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
+ * @ApiFilter(SearchFilter::class, properties={"groupe.apprenant.lastUpdate","groupe.type":"exact"})
  */
 class Promo
 {
@@ -82,13 +156,13 @@ class Promo
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"promo_read"})
+     * @Groups({"promo_groupes_apprenants_read","promo_read","promo_apprenant_read","groupe_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Referentiel::class, inversedBy="promo",cascade={"persist"})
-     * @Groups({"promo_read","promo_write","promo_id_ref"})
+     * @Groups({"promo_referentiel_write","promo_groupes_apprenants_read","promo_read","promo_id_ref","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      */
     private $referentiel;
 
@@ -100,61 +174,61 @@ class Promo
 
     /**
      * @ORM\OneToMany(targetEntity=Groupe::class, mappedBy="promo")
-     * @Groups({"promo_read","promo_write"})
+     * @Groups({"promo_groupes_apprenants_read","promo_read","promo_write","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      */
     private $groupe;
 
     /**
      * @ORM\ManyToMany(targetEntity=Formateur::class, inversedBy="promos")
-     * @Groups({"promo_read","promo_write"})
+     * @Groups({"promo_read","promo_write","promo_formateur_read"})
      */
     private $formateurs;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"promo_read","promo_write"})
+     * @Groups({"promo_groupes_apprenants_read","promo_read","promo_write","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      */
     private $titre;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"promo_read","promo_write"})
+     * @Groups({"promo_groupes_apprenants_read","promo_read","promo_write","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      */
     private $langue;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"promo_read","promo_write"})
+     * @Groups({"promo_groupes_apprenants_read","promo_read","promo_write","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"promo_read","promo_write"})
+     * @Groups({"promo_groupes_apprenants_read","promo_read","promo_write","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      */
     private $lieu;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"promo_read","promo_write"})
+     * @Groups({"promo_groupes_apprenants_read","promo_read","promo_write","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      */
     private $referenceAgate;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"promo_read","promo_write"})
+     * @Groups({"promo_groupes_apprenants_read","promo_read","promo_write","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      */
     private $fabrique;
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"promo_read","promo_write"})
+     * @Groups({"promo_groupes_apprenants_read","promo_read","promo_write","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      */
     private $dateDébut;
 
     /**
      * @ORM\Column(type="date", nullable=true)
-     * @Groups({"promo_read","promo_write"})
+     * @Groups({"promo_groupes_apprenants_read","promo_read","promo_write","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      */
     private $dateFin;
 

@@ -25,7 +25,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *          "normalization_context"={"groups"={"referentiel_read"}}
  *     },
  * collectionOperations={
- * 
  *          "post"=
  *              {
  *                 "path"="/admin/referentiels",
@@ -55,6 +54,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "security"="is_granted('ROLE_CM')", 
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
  *              "path"="admin/referentiels/groupecompetences",
+ *              "normalization_context"={"groups"={"referentiel_groupecompetence_read"}}
  *              },
  * 
  *              "referentiel_groupecompetence_competence"=
@@ -115,37 +115,42 @@ class Referentiel
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"referentiel_read","referentiel_groupecompetence_read"})
+     * @Groups({"promo_referentiel_write","promo_groupes_apprenants_read","referentiel_read","referentiel_groupecompetence_read","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read","promo_id_ref"})
+     * @Groups({"promo_groupes_apprenants_read","promo_apprenant_read","referentiel:write","referentiel_read","referentiel_groupecompetence_read","promo_id_ref","promo_formateur_read","promo_apprenants_read"})
      * @Assert\NotBlank()
+     
      */
     private $libelle;
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read","promo_id_ref"})
+     * @Groups({"promo_groupes_apprenants_read","referentiel:write","promo_apprenant_read","referentiel_read","referentiel_groupecompetence_read","promo_id_ref","promo_formateur_read","promo_apprenants_read"})
+     * @Assert\NotBlank()
      */
     private $presentation;
 
     /**
      * @ORM\Column(type="string",length=255)
-     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read","promo_id_ref"})
+     * @Groups({"promo_groupes_apprenants_read","referentiel:write","promo_apprenant_read","referentiel_read","referentiel_groupecompetence_read","promo_id_ref","promo_formateur_read","promo_apprenants_read"})
+     * @Assert\NotBlank()
      */
     private $programme;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read","promo_id_ref"})
+     * @Groups({"promo_groupes_apprenants_read","referentiel:write","promo_apprenant_read","referentiel_read","referentiel_groupecompetence_read","promo_id_ref","promo_formateur_read","promo_apprenants_read"})
+     * @Assert\NotBlank()
      */
     private $critereAdmission;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read","promo_id_ref"})
+     * @Groups({"promo_groupes_apprenants_read","referentiel:write","promo_apprenant_read","referentiel_read","referentiel_groupecompetence_read","promo_id_ref","promo_formateur_read","promo_apprenants_read"})
+     * @Assert\NotBlank()
      */
     private $critereEvaluation;
 
@@ -162,12 +167,13 @@ class Referentiel
     private $briefs;
 
     /**
-     * @ORM\OneToMany(targetEntity=Promo::class, mappedBy="referentiel")
+     * @ORM\OneToMany(targetEntity=Promo::class,mappedBy="referentiel")
      */
     private $promo;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"promo_groupes_apprenants_read","promo_apprenant_read"})
      */
     private $isDeleted;
 

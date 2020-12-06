@@ -11,7 +11,7 @@ class TagsFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        $tags=['PHP/SQL','JQUER','HTML/CSS/BOOTSTRAP','CMS','WORDPRESS'];
+        $tags=['PHP/MYSQL','JQUERY','HTML/CSS/BOOTSTRAP','CMS','WORDPRESS'];
         for($i=0;$i<5 ;$i++)
         {
             $Tags=new Tags();

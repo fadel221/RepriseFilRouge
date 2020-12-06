@@ -34,6 +34,15 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *              "path"="admin/profilsorties",
  *             
  *          },
+ * 
+ *          "profilsortiebypromo"={
+ *              "security"="is_granted('ROLE_ADMIN')", 
+ *              "security_message"="Vous n'avez pas acces a cette ressource.",
+ *              "path"="admin/promo/{id}/profilsorties",
+ *              "method"="GET"
+*               },
+
+            
  *     },
  *     
  *     itemOperations={
