@@ -30,7 +30,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *                 "path"="/admin/referentiels",
  *                 "security"="is_granted('ROLE_ADMIN')",
  *                 "security_message"="Vous n'avez pas le privilege",
- *                 "denormalization_context"={"groups"={"referentiel:write"}}
  *              },
  *         "get"={
  *              "security"="is_granted('ROLE_ADMIN')", 
@@ -78,13 +77,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "security"="is_granted('ROLE_ADMIN')",
  *              "security_message"="Vous n'avez pas ces privileges.",
  *              "path"="admin/referentiels/{id}",
- *          },
- * 
- *           "put"={
- *              "security"="is_granted('ROLE_ADMIN')", 
- *              "security_message"="Vous n'avez pas ces privileges.",
- *              "path"="admin/referentiels/{id}",
- *              "denormalization_context"={"groups"={"referentiel:write"}}
  *          },    
  *         "update_referentiel"={
  *              "method"="PATCH",
@@ -121,35 +113,35 @@ class Referentiel
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"promo_groupes_apprenants_read","promo_apprenant_read","referentiel:write","referentiel_read","referentiel_groupecompetence_read","promo_id_ref","promo_formateur_read","promo_apprenants_read"})
+     * @Groups({"promo_groupes_apprenants_read","promo_apprenant_read","referentiel_read","referentiel_groupecompetence_read","promo_id_ref","promo_formateur_read","promo_apprenants_read"})
      * @Assert\NotBlank()
      
      */
     private $libelle;
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"promo_groupes_apprenants_read","referentiel:write","promo_apprenant_read","referentiel_read","referentiel_groupecompetence_read","promo_id_ref","promo_formateur_read","promo_apprenants_read"})
+     * @ORM\Column(type="blob")
+     * @Groups({"promo_groupes_apprenants_read","promo_apprenant_read","referentiel_read","referentiel_groupecompetence_read","promo_id_ref","promo_formateur_read","promo_apprenants_read"})
      * @Assert\NotBlank()
      */
     private $presentation;
 
     /**
      * @ORM\Column(type="string",length=255)
-     * @Groups({"promo_groupes_apprenants_read","referentiel:write","promo_apprenant_read","referentiel_read","referentiel_groupecompetence_read","promo_id_ref","promo_formateur_read","promo_apprenants_read"})
+     * @Groups({"promo_groupes_apprenants_read","promo_apprenant_read","referentiel_read","referentiel_groupecompetence_read","promo_id_ref","promo_formateur_read","promo_apprenants_read"})
      * @Assert\NotBlank()
      */
     private $programme;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"promo_groupes_apprenants_read","referentiel:write","promo_apprenant_read","referentiel_read","referentiel_groupecompetence_read","promo_id_ref","promo_formateur_read","promo_apprenants_read"})
+     * @Groups({"promo_groupes_apprenants_read","promo_apprenant_read","referentiel_read","referentiel_groupecompetence_read","promo_id_ref","promo_formateur_read","promo_apprenants_read"})
      * @Assert\NotBlank()
      */
     private $critereAdmission;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"promo_groupes_apprenants_read","referentiel:write","promo_apprenant_read","referentiel_read","referentiel_groupecompetence_read","promo_id_ref","promo_formateur_read","promo_apprenants_read"})
+     * @Groups({"promo_groupes_apprenants_read","promo_apprenant_read","referentiel_read","referentiel_groupecompetence_read","promo_id_ref","promo_formateur_read","promo_apprenants_read"})
      * @Assert\NotBlank()
      */
     private $critereEvaluation;
@@ -157,7 +149,7 @@ class Referentiel
     /**
      * @ORM\ManyToMany(targetEntity=Groupecompetence::class, inversedBy="referentiels",cascade={"persist"}))
      * @ApiSubresource()
-     * @Groups({"referentiel:write","referentiel_read","referentiel_groupecompetence_read","promo_id_ref"})
+     * @Groups({"referentiel_read","referentiel_groupecompetence_read","promo_id_ref"})
      */
     private $groupecompetences;
 
@@ -202,12 +194,17 @@ class Referentiel
         return $this;
     }
 
-    public function getPresentation(): ?string
+    public function getPresentation()
     {
-        return $this->presentation;
+        if($this->presentation)
+        {
+            $presentation_str= stream_get_contents($this->presentation);
+            return base64_encode($presentation_str);
+        }
+        return null;
     }
 
-    public function setPresentation(string $presentation): self
+    public function setPresentation($presentation): self
     {
         $this->presentation = $presentation;
 

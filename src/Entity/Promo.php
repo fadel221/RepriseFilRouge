@@ -15,7 +15,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 
 /**
  * @ApiResource(
- * 
  * attributes={
  *          "pagination_items_per_page"=10,
  *          "normalization_context"={"groups"={"promo_read"},"enable_max_depth"=true},
@@ -34,7 +33,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
  *              "path"="admin/promos",
  *              },
- * 
  *          "get_apprenant_attente"={
  *              "method"="GET",
  *              "security"="is_granted('ROLE_ADMIN')", 

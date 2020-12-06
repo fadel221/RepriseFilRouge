@@ -36,10 +36,47 @@ class Brief
      */
     private $promoBriefApprenants;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $langue;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $titre;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    private $contexte;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    private $modalitePedagogiques;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    private $criteresPerformance;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isDeleted;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $dateCreation;
+
     public function __construct()
     {
         $this->promoBriefs = new ArrayCollection();
         $this->promoBriefApprenants = new ArrayCollection();
+        $this->setIsDeleted(false);
+        $this->setDatecreation(new \DateTime());
     }
 
     public function getId(): ?int
@@ -115,6 +152,90 @@ class Brief
                 $promoBriefApprenant->setBrief(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLangue(): ?string
+    {
+        return $this->langue;
+    }
+
+    public function setLangue(string $langue): self
+    {
+        $this->langue = $langue;
+
+        return $this;
+    }
+
+    public function getTitre(): ?string
+    {
+        return $this->titre;
+    }
+
+    public function setTitre(string $titre): self
+    {
+        $this->titre = $titre;
+
+        return $this;
+    }
+
+    public function getContexte(): ?string
+    {
+        return $this->contexte;
+    }
+
+    public function setContexte(string $contexte): self
+    {
+        $this->contexte = $contexte;
+
+        return $this;
+    }
+
+    public function getModalitePedagogiques(): ?string
+    {
+        return $this->modalitePedagogiques;
+    }
+
+    public function setModalitePedagogiques(string $modalitePedagogiques): self
+    {
+        $this->modalitePedagogiques = $modalitePedagogiques;
+
+        return $this;
+    }
+
+    public function getCriteresPerformance(): ?string
+    {
+        return $this->criteresPerformance;
+    }
+
+    public function setCriteresPerformance(string $criteresPerformance): self
+    {
+        $this->criteresPerformance = $criteresPerformance;
+
+        return $this;
+    }
+
+    public function getIsDeleted(): ?bool
+    {
+        return $this->isDeleted;
+    }
+
+    public function setIsDeleted(bool $isDeleted): self
+    {
+        $this->isDeleted = $isDeleted;
+
+        return $this;
+    }
+
+    public function getDateCreation(): ?\DateTimeInterface
+    {
+        return $this->dateCreation;
+    }
+
+    public function setDateCreation(\DateTimeInterface $dateCreation): self
+    {
+        $this->dateCreation = $dateCreation;
 
         return $this;
     }
