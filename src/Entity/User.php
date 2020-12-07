@@ -150,6 +150,7 @@ class User  implements UserInterface
 
     /**
      * @ORM\Column(type="blob",nullable=true)
+     * @Groups({"user_read"})
      */
     private $avatar;
 
