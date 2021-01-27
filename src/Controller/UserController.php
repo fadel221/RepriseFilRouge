@@ -18,7 +18,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserController extends AbstractController
-{    
+{   
+     
      /**
      * @Route(
      *     path="/api/admin/users",
@@ -34,7 +35,7 @@ class UserController extends AbstractController
     public function addUser(UserServices $userservice,Request $request,UserPasswordEncoderInterface $encoder,SerializerInterface $serializer,ValidatorInterface $validator,ProfilRepository $profil,EntityManagerInterface $manager)
     {
         $user=$userservice->addUser($request, $encoder, $serializer, $validator, $profil, $manager);
-        
+        return $this -> json($user, Response::HTTP_CREATED,);
     }
 
     /**
@@ -50,7 +51,8 @@ class UserController extends AbstractController
     */
     public function UpdateUser(Request $request,UserPasswordEncoderInterface $encoder,SerializerInterface $serializer,ValidatorInterface $validator,UserRepository $userrep,EntityManagerInterface $manager,$id,UserServices $userservice)
     {
-        $userservice->updateUser($request, $encoder, $serializer, $validator, $userrep,$manager,$id);
+        $user= $userservice->updateUser($request, $encoder, $serializer, $validator, $userrep,$manager,$id);
+        return $this -> json($user, Response::HTTP_CREATED);
     }
 
     /**
@@ -78,6 +80,24 @@ class UserController extends AbstractController
         $manager->persist($user);
         $manager->flush(); 
         return $this->json($user,Response::HTTP_CREATED);
+    }
+
+    /**
+     * @Route(
+     *     path="/api/admin/users/count",
+     *     methods={"GET"},
+     *     defaults={
+     *          "__controller"="App\Controller\UserController::CountUser",
+     *          "__api_resource_class"=User::class,
+     *          "__api_collection_operation_name"="count_user"
+     *         }
+     * )
+    */
+
+    public function getCountUser(UserRepository $userrep)
+    {
+        $count["nbre_user"]=$userrep->getCountUser()[0][1];
+        return $this->json($count,Response::HTTP_OK);
     }
 
     

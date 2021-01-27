@@ -32,7 +32,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *              "method"="GET",
  *              "security"="is_granted('ROLE_FORMATEUR')", 
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
- *              "path"="admin/competences"
+ *              "path"="admin/competences",
+ *              
  *              },
  *     },
  *     
@@ -75,7 +76,7 @@ class Competence
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"Grpcompetence_read","referentiel_groupecompetence_read"})
+     * @Groups({"competence_read","Grpcompetence_read","referentiel_groupecompetence_read"})
      */
     private $id;
 

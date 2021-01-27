@@ -33,14 +33,20 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "path"="admin/users",
  *              "security"="is_granted('ROLE_ADMIN')",
  *              "security_message"="Vous n'avez pas le privilege",
- *              
+ *              "normalization_context"={"groups"={"user_read"}}
  *          },
  *         "get"={
  *              "security"="is_granted('ROLE_ADMIN')", 
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
  *              "path"="admin/users",
- *              "defaults"={"id"=null}
+ *              "defaults"={"id"=null} 
  *          },
+ *          "count_user"=
+ *           {
+ *               "security"="is_granted('ROLE_ADMIN')", 
+ *               "security_message"="Vous n'avez pas acces a cette ressource.",
+ *               "path"="admin/users/count"
+ *           }
  *     },
  *     
  *     itemOperations={
@@ -51,13 +57,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "path"="admin/users/{id}",
  *              "requirements"={"id"="\d+"},
  *              "defaults"={"id"=null}
+ *              
  *          },
  *          "get_admin"={
  *              "method"="GET",
  *              "path"="/admins/{id}",
  *              "requirements"={"id"="\d+"},
  *              "security"="(is_granted('ROLE_FORMATEUR'))",
- *              "security_message"="Vous n'avez pas access à cette Ressource"
+ *              "security_message"="Vous n'avez pas access à cette Ressource",
+ *              "defaults"={"id"=null}
  *          }, 
  *         "delete_user"={
  *              "method"="DELETE",
@@ -90,80 +98,85 @@ class User  implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"promo_write","promo_apprenants_write","promo_formateurs_write","promo_groupes_apprenants_read","promo_apprenant_read","groupe_apprenant_read","promo_formateur_read","promo_apprenants_read"})
+     * @Groups({"user_read","promo_write","promo_apprenants_write","promo_formateurs_write","promo_groupes_apprenants_read","promo_apprenant_read","groupe_apprenant_read","promo_formateur_read","promo_apprenants_read"})
+     * 
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Groups({"user_read","apprenant_read","formateur_read","profilsorties_read"})
      * @Assert\NotBlank()
      */
-    private $username;
+    protected $username;
 
     
-    private $roles = [];
+    protected $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
+     * @Groups({"user_read"})
      */
-    private $password;
+    protected $password;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"promo_groupes_apprenants_read","user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read","promo_read","promo_apprenant_read","groupe_apprenant_read","promo_formateur_read"})
-     * @Assert\Email()
+     *  /**
+     *@Assert\Email(
+     *     message = "The email '{{ value }}' is not a valid email."
+     *)
      * @Assert\Unique
      */
-    private $email;
+    protected $email;
 
     /**
      * @ORM\Column(type="boolean",nullable=true)
      * @Groups({"promo_groupes_apprenants_read","user_read","apprenant_read","formateur_read","profilsorties_read","promo_read","promo_apprenant_read","groupe_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      * 
      */
-    private $isDeleted;
+    protected $isDeleted;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"promo_groupes_apprenants_read","user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read","promo_read","promo_apprenant_read","groupe_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      * @Assert\NotBlank()
      */
-    private $prenom;
+    protected $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"promo_groupes_apprenants_read","user_read","apprenant_read","formateur_read","profilsorties_read","groupe_read","promo_read","promo_apprenant_read","groupe_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      * @Assert\NotBlank()
      */
-    private $nom;
+    protected $nom;
 
 
     /**
      * @ORM\ManyToOne(targetEntity=Profil::class, inversedBy="users")
      * @ORM\JoinColumn(nullable=true)
-     * 
+     * @Groups({"user_read"})
      */
-    private $profil;
+    protected $profil;
 
     /**
      * @ORM\Column(type="blob",nullable=true)
      * @Groups({"user_read"})
      */
-    private $avatar;
+    protected $avatar;
 
     /**
      * @ORM\Column(type="date", nullable=true)
      * @Groups({"promo_groupes_apprenants_read","promo_apprenant_read","groupe_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      */
-    private $lastUpdate;
+    protected $lastUpdate;
 
     /**
      * @ORM\OneToMany(targetEntity=Groupecompetence::class, mappedBy="user",cascade={"persist"})
      */
-    private $groupecompetences;
+    protected $groupecompetences;
 
     public function __construct()
     {
@@ -188,7 +201,6 @@ class User  implements UserInterface
     public function setUsername(string $username): self
     {
         $this->username = $username;
-
         return $this;
     }
 
@@ -206,7 +218,6 @@ class User  implements UserInterface
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
-
         return $this;
     }
 
@@ -221,7 +232,6 @@ class User  implements UserInterface
     public function setPassword(string $password): self
     {
         $this->password = $password;
-
         return $this;
     }
 
@@ -357,7 +367,6 @@ class User  implements UserInterface
                 $groupecompetence->setUser(null);
             }
         }
-
         return $this;
     }
 }

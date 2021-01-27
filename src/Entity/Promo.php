@@ -10,9 +10,11 @@ use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource(
  * attributes={
@@ -22,11 +24,12 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *      },
  * 
  *  collectionOperations={
- *         "post"={
+ *         "add_promo"={
  *              "security_post_denormalize"="is_granted('ROLE_ADMIN')", 
  *              "security_post_denormalize_message"="Vous n'avez pas ce privilege.",
  *              "path"="admin/promos",
- *              "denormalization_context"={"groups"={"promo_write"}}
+ *              "denormalization_context"={"groups"={"promo_write"}},
+ *              "normalization_context"={"groups"={"promo_read"},"enable_max_depth"=true},
  *          },
  *         "get"={
  *              "security"="is_granted('ROLE_ADMIN')", 
@@ -147,8 +150,16 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  * @ORM\Entity(repositoryClass=PromoRepository::class)
  * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  * @ApiFilter(SearchFilter::class, properties={"groupe.apprenant.lastUpdate","groupe.type":"exact"})
+ * @UniqueEntity(
+ *      fields={"titre"},
+ *      message="Ce libellé existe déjà"
+ *)   
+ *
  */
+
+ 
 class Promo
+
 {
     /**
      * @ORM\Id
@@ -158,11 +169,6 @@ class Promo
      */
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Referentiel::class, inversedBy="promo",cascade={"persist"})
-     * @Groups({"promo_referentiel_write","promo_groupes_apprenants_read","promo_read","promo_id_ref","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
-     */
-    private $referentiel;
 
     /**
      * @ORM\OneToMany(targetEntity=PromoBrief::class, mappedBy="promo")
@@ -171,8 +177,9 @@ class Promo
     private $promoBriefs;
 
     /**
-     * @ORM\OneToMany(targetEntity=Groupe::class, mappedBy="promo")
+     * @ORM\OneToMany(targetEntity=Groupe::class, mappedBy="promo",cascade={"persist"})
      * @Groups({"promo_groupes_apprenants_read","promo_read","promo_write","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
+     *
      */
     private $groupe;
 
@@ -185,41 +192,47 @@ class Promo
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"promo_groupes_apprenants_read","promo_read","promo_write","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
+     * @Assert\NotBlank()
      */
     private $titre;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"promo_groupes_apprenants_read","promo_read","promo_write","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
+     * @Assert\NotBlank()
      */
     private $langue;
 
     /**
      * @ORM\Column(type="text")
      * @Groups({"promo_groupes_apprenants_read","promo_read","promo_write","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
+     * @Assert\NotBlank()
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"promo_groupes_apprenants_read","promo_read","promo_write","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
+     * @Assert\NotBlank() 
      */
     private $lieu;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"promo_groupes_apprenants_read","promo_read","promo_write","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
+     * @Assert\NotBlank()
      */
     private $referenceAgate;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"promo_groupes_apprenants_read","promo_read","promo_write","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
+     * @Assert\NotBlank()
      */
     private $fabrique;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date",nullable=true)
      * @Groups({"promo_groupes_apprenants_read","promo_read","promo_write","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
      */
     private $dateDébut;
@@ -230,12 +243,32 @@ class Promo
      */
     private $dateFin;
 
+    /**
+     * @ORM\Column(type="blob")
+     * @Assert\NotBlank()
+     */
+    private $avatar;
+
+    /**
+     * @ORM\Column(type="blob",nullable=true)
+     * @Assert\NotBlank()
+     */
+    private $file;
+
+    /**
+     * @Groups({"promo_referentiel_write","promo_groupes_apprenants_read","promo_read","promo_id_ref","promo_apprenant_read","promo_formateur_read","promo_apprenants_read"})
+     * @ORM\ManyToMany(targetEntity=Referentiel::class, inversedBy="promos")
+     * @Assert\NotBlank()
+     */
+    private $referentiels;
+
     public function __construct()
     {
         $this->groupe = new ArrayCollection();
         $this->promoBriefs = new ArrayCollection();
         $this->formateurs = new ArrayCollection();
         $this->setDateDébut(new DateTime());
+        $this->referentiels = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -243,17 +276,7 @@ class Promo
         return $this->id;
     }
 
-    public function getReferentiel(): ?Referentiel
-    {
-        return $this->referentiel;
-    }
-
-    public function setReferentiel(?Referentiel $referentiel): self
-    {
-        $this->referentiel = $referentiel;
-
-        return $this;
-    }
+   
 
     /**
      * @return Collection|Groupe[]
@@ -347,7 +370,6 @@ class Promo
     public function setTitre(string $titre): self
     {
         $this->titre = $titre;
-
         return $this;
     }
 
@@ -359,7 +381,6 @@ class Promo
     public function setLangue(string $langue): self
     {
         $this->langue = $langue;
-
         return $this;
     }
 
@@ -371,7 +392,6 @@ class Promo
     public function setDescription(string $description): self
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -383,7 +403,6 @@ class Promo
     public function setLieu(?string $lieu): self
     {
         $this->lieu = $lieu;
-
         return $this;
     }
 
@@ -395,7 +414,6 @@ class Promo
     public function setReferenceAgate(?string $referenceAgate): self
     {
         $this->referenceAgate = $referenceAgate;
-
         return $this;
     }
 
@@ -407,7 +425,6 @@ class Promo
     public function setFabrique(string $fabrique): self
     {
         $this->fabrique = $fabrique;
-
         return $this;
     }
 
@@ -419,7 +436,6 @@ class Promo
     public function setDateDébut(\DateTimeInterface $dateDébut): self
     {
         $this->dateDébut = $dateDébut;
-
         return $this;
     }
 
@@ -431,7 +447,61 @@ class Promo
     public function setDateFin(?\DateTimeInterface $dateFin): self
     {
         $this->dateFin = $dateFin;
+        return $this;
+    }
 
+    public function getAvatar()
+    {
+        if($this->avatar)
+        {
+            $avatar_str= stream_get_contents($this->avatar);
+            return base64_encode($avatar_str);
+        }
+        return null;
+    }
+
+    public function setAvatar($avatar): self
+    {
+        $this->avatar = $avatar;
+        return $this;
+    }
+
+    public function getFile()
+    {
+        if($this->file)
+        {
+            $file_str= stream_get_contents($this->file);
+            return base64_encode($file_str);
+        }
+        return null;
+    }
+
+    public function setFile($file): self
+    {
+        $this->file = $file;
+        return $this;
+    }
+
+    /**
+     * @return Collection|Referentiel[]
+     */
+    public function getReferentiels(): Collection
+    {
+        return $this->referentiels;
+    }
+
+    public function addReferentiel(Referentiel $referentiel): self
+    {
+        if (!$this->referentiels->contains($referentiel)) {
+            $this->referentiels[] = $referentiel;
+        }
+
+        return $this;
+    }
+
+    public function removeReferentiel(Referentiel $referentiel): self
+    {
+        $this->referentiels->removeElement($referentiel);
         return $this;
     }
 }

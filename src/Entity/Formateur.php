@@ -76,13 +76,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  */
 class Formateur extends User
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     * @Groups({"groupe_write"})
-     */
-    private $id;
+    
 
     /**
      * @ORM\ManyToMany(targetEntity=Groupe::class, mappedBy="formateur")

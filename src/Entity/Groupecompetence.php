@@ -86,7 +86,7 @@ class Groupecompetence
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups ({"referentiel_read","referentiel:write","referentiel_read","competence_read","competence_write","referentiel_groupecompetence_read"})
+     * @Groups ({"Grpcompetence_read","referentiel_read","referentiel:write","referentiel_read","competence_read","competence_write","referentiel_groupecompetence_read"})
      */
     private $id;
 
@@ -113,7 +113,7 @@ class Groupecompetence
     /**
      * @ORM\Column(type="string", length=255)
      *  @Assert\NotBlank()
-     * @Groups({"referentiel_read","competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref","referentiel_groupecompetence_read"})
+     *  @Groups({"referentiel_read","competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","referentiel_read","promo_id_ref","referentiel_groupecompetence_read"})
      */
     private $nom;
 
@@ -127,7 +127,6 @@ class Groupecompetence
      * @ORM\Column(type="string", length=255, unique=true)
      * @Groups({"referentiel_read","competence_read","Grpcompetence_read","Grpcompetence_competence_read","promo_id_ref","referentiel_groupecompetence_read"})
      * @Assert\NotBlank()
-     * 
      */
     private $libelle;
 

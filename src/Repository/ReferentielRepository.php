@@ -47,4 +47,14 @@ class ReferentielRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findOneReferentielByLibelle($value): ?Referentiel
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.libelle = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }

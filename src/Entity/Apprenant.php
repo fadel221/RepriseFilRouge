@@ -29,12 +29,14 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
  *              "path"="admin/apprenants",
  *              "defaults"={"id"=null}
+ *              
  *          },
  *          "get"={
  *              "security"="is_granted('ROLE_CM')", 
  *              "security_message"="Vous n'avez pas acces a cette ressource.",
  *              "path"="/apprenants",
  *              "defaults"={"id"=null}
+ *              
  *          },
  *          "add_user"=
  *          {
@@ -56,6 +58,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "path"="admin/apprenants/{id}",
  *              "requirements"={"id"="\d+"},
  *              "defaults"={"id"=null}
+ *              
  *          },
  *           "get"={
  *              "security"="is_granted('ROLE_CM')", 
@@ -64,6 +67,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "path"="apprenants/{id}",
  *              "requirements"={"id"="\d+"},
  *              "defaults"={"id"=null}
+ *              
  *          },
  * 
  *           
@@ -98,13 +102,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  */
 class Apprenant extends User
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     * @Groups({"promo_write","groupe_write","groupe_apprenant_write"})
-     */
-    private $id;
+    
 
     /**
      * @ORM\ManyToOne(targetEntity=ProfilSortie::class, inversedBy="apprenants")

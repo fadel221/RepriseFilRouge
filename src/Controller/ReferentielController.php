@@ -83,6 +83,7 @@ class ReferentielController extends AbstractController
     public function addReferentiel(Request $request,SerializerInterface $serializer,GroupecompetenceRepository $grp,FileUpload $upload,ValidatorInterface $validator,EntityManagerInterface $manager)
     {
         $Referentiel_tab = $request->request->all();
+    
         $presentation =$upload->UploadFile("presentation",$request);
         $Referentiel_tab["presentation"]=$presentation;
         $groupecompetence_tab=$Referentiel_tab["groupecompetence_array"];

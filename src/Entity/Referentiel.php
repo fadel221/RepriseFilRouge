@@ -126,7 +126,7 @@ class Referentiel
     private $presentation;
 
     /**
-     * @ORM\Column(type="string",length=255)
+     * @ORM\Column(type="string",length=25)
      * @Groups({"promo_groupes_apprenants_read","promo_apprenant_read","referentiel_read","referentiel_groupecompetence_read","promo_id_ref","promo_formateur_read","promo_apprenants_read"})
      * @Assert\NotBlank()
      */
@@ -169,12 +169,18 @@ class Referentiel
      */
     private $isDeleted;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Promo::class, mappedBy="referentiels")
+     */
+    private $promos;
+
     public function __construct()
     {
         $this->groupecompetences = new ArrayCollection();
         $this->briefs = new ArrayCollection();
         $this->promo = new ArrayCollection();
         $this->setIsDeleted(false);
+        $this->promos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -341,5 +347,13 @@ class Referentiel
         $this->isDeleted = $isDeleted;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Promo[]
+     */
+    public function getPromos(): Collection
+    {
+        return $this->promos;
     }
 }

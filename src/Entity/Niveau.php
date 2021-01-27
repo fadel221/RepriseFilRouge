@@ -39,9 +39,8 @@ class Niveau
     private $competence;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255,nullable=true)
      * @Groups({"competence_read","Grpcompetence_read","Grpcompetence_competence_read","update_Grpcompetence_read","competence_write"})
-     * @Assert\NotBlank()
      */
     private $libelle;
 

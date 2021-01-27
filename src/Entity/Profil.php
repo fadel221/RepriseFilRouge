@@ -63,7 +63,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *     },
  * )
  *  @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
- * @UniqueEntity(
+ *  @UniqueEntity(
  *      fields={"libelle"},
  *      message="Ce libellé existe déjà"
  *)
@@ -74,6 +74,8 @@ class Profil extends ProfilDataPersister
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"profil_read","user_read"})
+     * 
      */
     private $id;
 
